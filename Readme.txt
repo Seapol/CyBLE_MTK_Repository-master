@@ -1,4 +1,7 @@
 Release notes:
+2021-03-06 (v4.5.0)
+1.Test development for CyBLE RSSI 
+
 2020-08-06 (v4.4.0)
 1.Add Feature to support Fittec MES System ver 1.0
 
