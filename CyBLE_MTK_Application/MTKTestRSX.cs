@@ -17,6 +17,8 @@ namespace CyBLE_MTK_Application
         public int PowerLevel = CyBLE_MTK_Application.Properties.Settings.Default.TXPPowerLevel;
         public int NumOfPackets = CyBLE_MTK_Application.Properties.Settings.Default.TXPNumOfPackets;
         public string DisplayText;
+        List<string> TempValues = new List<string>();
+        List<string> TempParameters = new List<string>();
 
         public MTKTestRSX()
             : base()
@@ -40,13 +42,14 @@ namespace CyBLE_MTK_Application
         {
 
             TestParameterCount = 1;
-            
+            this.InitializeTestResult();
+
         }
 
         public override string GetDisplayText()
         {
             
-            return "Get RSSI: " + DisplayText;
+            return "Get RSSI: " + DisplayText + String.Format(" | PASS Criterion: {0} |", TestResult.PassCriterion);
         }
 
         public override string GetTestParameter(int TestParameterIndex)
@@ -335,11 +338,13 @@ namespace CyBLE_MTK_Application
             for (int i = 0; i < CommandResults.Count(); i++)
             {
                 TempValue[i] = CommandResults[i];
-                TempParameter[i] = "RSSI" + i.ToString();
+                TempParameter[i] = "RSSI CH" + ChannelNumber;
                 bda += TempValue[i] + " ";
+                TempValues.Add(TempValue[i]);
+                TempParameters.Add(TempParameter[i]);
             }
-            TestResult.Value = TempValue;
-            TestResult.Parameters = TempParameter;
+            //TestResult.Value = TempValue;
+            //TestResult.Parameters = TempParameter;
             
 
             int CommandResultsValue = int.Parse(CommandResult.Replace("dBm",""));
@@ -348,8 +353,8 @@ namespace CyBLE_MTK_Application
             {
                 CommandRetVal = MTKTestError.TestFailed;
                 TestStatusUpdate(MTKTestMessageType.Failure, "FAIL->" + bda);
-                TestResult.Result = "FAIL";
-                TestResultUpdate(TestResult);
+                //TestResult.Result = "FAIL";
+                //TestResultUpdate(TestResult);
                 this.Log.PrintLog(this, string.Format("Result: FAIL->{0}",bda), LogDetailLevel.LogRelevant);
                 return MTKTestError.TestFailed;
             }
@@ -364,8 +369,11 @@ namespace CyBLE_MTK_Application
         public override MTKTestError RunTest()
         {
             MTKTestError RetVal = MTKTestError.NoError;
+            List<MTKTestError> mTKTestErrors = new List<MTKTestError>();
 
-            this.InitializeTestResult();
+            mTKTestErrors.Clear();
+            TempParameters.Clear();
+            TempValues.Clear();
 
             if (this.DUTConnectionMode == DUTConnMode.BLE)
             {
@@ -379,50 +387,91 @@ namespace CyBLE_MTK_Application
                     {
                         ChannelNumber = Channel;
                         RetVal = RunTestUART();
+                        mTKTestErrors.Add(RetVal);
                     }
                 }
                 else
                 {
                     RetVal = RunTestUART();
+                    mTKTestErrors.Add(RetVal);
                 }
-                
+
+                TestResult.Value = TempValues.ToArray();
+                TestResult.Parameters = TempParameters.ToArray();
             }
             else
             {
                 return MTKTestError.NoConnectionModeSet;
             }
 
+            foreach (var item in mTKTestErrors)
+            {
+                switch (item)
+                {
+                    case MTKTestError.NoError:
+                        if (MTKSerialPort.IsOpen)
+                        {
+                            MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_ALL_PASS;
+                        }
+                        else
+                        {
+                            MTKTestTmplSFCSErrCode = ECCS.ERROR_CODE_CAUSED_BY_MTK_TESTER;
+                        }
+                        
+                        break;
+                    case MTKTestError.ReceivedNAC:
+                        break;
+                    case MTKTestError.MissingDUT:
+                        break;
+                    case MTKTestError.TestFailed:
+                        MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_CyBLE_GetRSSI_TEST_FAIL;
+                        RetVal = MTKTestError.TestFailed;
+                        TestResult.Result = "FAIL";
+                        break;
+                    case MTKTestError.NoConnectionModeSet:
+                        break;
+                    case MTKTestError.MissingDUTSerialPort:
+                        break;
+                    case MTKTestError.MissingMTKSerialPort:
+                        break;
+                    case MTKTestError.UnknownError:
+                        break;
+                    case MTKTestError.MissingAnritsuSerialPort:
+                        break;
+                    case MTKTestError.IgnoringDUT:
+                        MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_DUT_NOT_TEST;
+                        RetVal = MTKTestError.IgnoringDUT;
+                        TestResult.Result = "IGNORE";
+                        break;
+                    case MTKTestError.NotAllDevicesProgrammed:
+                        break;
+                    case MTKTestError.ProgrammerNotConfigured:
+                        break;
+                    case MTKTestError.Pending:
+                        break;
+                    case MTKTestError.ProcessCheckFailure:
+                        break;
+                    default:
+                        MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_CUS_TEST_FAILURE_BUT_UNKNOWN;
+                        RetVal = MTKTestError.TestFailed;
+                        TestResult.Result = "FAIL";
+                        break;
+                }
+
+
+            }
+
+            
             TestResultUpdate(TestResult);
 
-            if (RetVal == MTKTestError.NoError)
-            {
-                if (MTKSerialPort.IsOpen)
-                {
-                    MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_ALL_PASS;
-                }
-                else
-                {
-                    MTKTestTmplSFCSErrCode = ECCS.ERROR_CODE_CAUSED_BY_MTK_TESTER;
-                }
-
-            }
-            else if (RetVal == MTKTestError.IgnoringDUT)
-            {
-                MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_DUT_NOT_TEST;
-            }
-            else
-            {
-                MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_CyBLE_GetRSSI_TEST_FAIL;
-            }
-
-
+            
             return RetVal;
         }
 
         protected override void InitializeTestResult()
         {
             base.InitializeTestResult();
-            TestResult.PassCriterion = "N/A";
+            TestResult.PassCriterion = string.Format("RSSI value > {0} dBm", CyBLE_MTK_Application.Properties.Settings.Default.CyBLE_RSSI_LowerLimitDBM);
             TestResult.Measured = "N/A";
             CurrentMTKTestType = MTKTestType.MTKTestRSX;
 

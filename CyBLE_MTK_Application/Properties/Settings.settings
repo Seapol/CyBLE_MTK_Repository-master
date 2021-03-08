@@ -563,7 +563,7 @@
       <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="CyBLE_RSSI_LowerLimitDBM" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-30</Value>
+      <Value Profile="(Default)">-40</Value>
     </Setting>
   </Settings>
 </SettingsFile>
