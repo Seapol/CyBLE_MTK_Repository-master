@@ -7,6 +7,8 @@ using System.IO;
 using System.IO.Ports;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Diagnostics;
+
 
 namespace CyBLE_MTK_Application
 {
@@ -19,6 +21,8 @@ namespace CyBLE_MTK_Application
         public string DisplayText;
         List<string> TempValues = new List<string>();
         List<string> TempParameters = new List<string>();
+        Stopwatch stopwatch = new Stopwatch();
+        
 
         public MTKTestRSX()
             : base()
@@ -102,9 +106,10 @@ namespace CyBLE_MTK_Application
                 return false;
             }
             DisplayText = ParameterValue;
-
+            ChannelsNumber.Clear();
             switch (TestParameterIndex)
             {
+                
                 case 0:
                     if (ParameterValue.ToUpper().Contains("ALL"))
                     {
@@ -375,6 +380,8 @@ namespace CyBLE_MTK_Application
             TempParameters.Clear();
             TempValues.Clear();
 
+            stopwatch.Restart();
+
             if (this.DUTConnectionMode == DUTConnMode.BLE)
             {
                 RetVal = RunTestBLE();
@@ -401,6 +408,7 @@ namespace CyBLE_MTK_Application
             }
             else
             {
+                stopwatch.Stop();
                 return MTKTestError.NoConnectionModeSet;
             }
 
@@ -425,9 +433,11 @@ namespace CyBLE_MTK_Application
                         break;
                     case MTKTestError.TestFailed:
                         MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_CyBLE_GetRSSI_TEST_FAIL;
+                        TestStatusUpdate(MTKTestMessageType.Failure,"Fail");
                         RetVal = MTKTestError.TestFailed;
                         TestResult.Result = "FAIL";
-                        break;
+                        TestResultUpdate(TestResult);
+                        return RetVal;
                     case MTKTestError.NoConnectionModeSet:
                         break;
                     case MTKTestError.MissingDUTSerialPort:
@@ -442,7 +452,8 @@ namespace CyBLE_MTK_Application
                         MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_DUT_NOT_TEST;
                         RetVal = MTKTestError.IgnoringDUT;
                         TestResult.Result = "IGNORE";
-                        break;
+                        TestResultUpdate(TestResult);
+                        return RetVal;
                     case MTKTestError.NotAllDevicesProgrammed:
                         break;
                     case MTKTestError.ProgrammerNotConfigured:
@@ -455,16 +466,21 @@ namespace CyBLE_MTK_Application
                         MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_CUS_TEST_FAILURE_BUT_UNKNOWN;
                         RetVal = MTKTestError.TestFailed;
                         TestResult.Result = "FAIL";
-                        break;
+                        TestResultUpdate(TestResult);
+                        return RetVal;
+                        
                 }
 
 
             }
 
             
-            TestResultUpdate(TestResult);
+            
 
             
+            stopwatch.Stop();
+            this.Log.PrintLog(this, string.Format("Perform {0}: {1} secs", DisplayText, stopwatch.Elapsed.TotalMilliseconds / 1000), LogDetailLevel.LogRelevant);
+            TestResultUpdate(TestResult);
             return RetVal;
         }
 

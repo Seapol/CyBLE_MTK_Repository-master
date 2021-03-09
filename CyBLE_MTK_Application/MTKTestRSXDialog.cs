@@ -22,6 +22,7 @@ namespace CyBLE_MTK_Application
         private void OKButton_Click(object sender, EventArgs e)
         {
             GetRSSI.DisplayText = this.ChannelNumber.SelectedItem.ToString();
+            GetRSSI.ChannelsNumber.Clear();
             if (this.ChannelNumber.SelectedIndex > 39)
             {
                 if (this.ChannelNumber.SelectedItem.ToString().ToUpper().Contains("ALL"))

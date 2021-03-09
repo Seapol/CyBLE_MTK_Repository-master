@@ -45,7 +45,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>4.0.6.%2a</ApplicationVersion>
+    <ApplicationVersion>4.5.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -164,14 +164,16 @@
     <Reference Include="GeneralLinkSqlLocal">
       <HintPath>.\GeneralLinkSqlLocal.dll</HintPath>
     </Reference>
-    <Reference Include="HexadecimalTextBox">
-      <HintPath>..\..\CyBLE MTK App v4.3.7\v4.3.7\CyBLE_MTK_Repository-master\CyBLE_MTK_Application\HexadecimalTextBox.dll</HintPath>
+    <Reference Include="HexadecimalTextBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\HexadecimalTextBox\bin\Release\HexadecimalTextBox.dll</HintPath>
     </Reference>
     <Reference Include="Ivi.Visa.Interop">
       <HintPath>.\Ivi.Visa.Interop.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="MesInterface">
+    <Reference Include="MesInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Ref\MesInterface.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />

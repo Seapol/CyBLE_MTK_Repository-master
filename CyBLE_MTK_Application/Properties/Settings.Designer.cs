@@ -1494,7 +1494,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-40")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-80")]
         public int CyBLE_RSSI_LowerLimitDBM {
             get {
                 return ((int)(this["CyBLE_RSSI_LowerLimitDBM"]));
