@@ -660,7 +660,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("local")]
+        [global::System.Configuration.DefaultSettingValueAttribute("fittec")]
         public string SFCSInterface {
             get {
                 return ((string)(this["SFCSInterface"]));
