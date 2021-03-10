@@ -2542,12 +2542,22 @@ namespace CyBLE_MTK_Application
         /// </summary>
         private void MTKTestProgram_OnShopfloorPermissionCheckFail(int CurrentDUT)
         {
-            ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
-            this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.DarkRed, BackColor = Color.Pink }));
-            this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "PROCESS FAIL"));
+            if (DUTInfoDataGridView.Rows[CurrentDUT].Cells["Serial Port"].Value != "Configure...")
+            {
+                ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
+                this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.DarkRed, BackColor = Color.Pink }));
+                this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "PROCESS FAIL"));
 
-            this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
-            this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
+                this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
+                this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
+            }
+            else
+            {
+                
+                MTKTestProgram_OnIgnoreDUT();
+            }
+
+            
         }
 
         private void MTKTestProgram_OnShopfloorServerConnectionCheckFail(int CurrentDUT)
@@ -4906,6 +4916,8 @@ namespace CyBLE_MTK_Application
                     try
                     {
                         bool upload = m_SFCS.UploadTestResult(SerialNumber, Model, TesterID, errorcode, socket_no, DUTTestResultToShopfloor, "MTK", MFI_ID);
+                        Logger.PrintLog(this, m_SFCS.GetType().ToString().Substring(22) + " UPLOAD INFO : " + "DUT#" + (i + 1).ToString() + "  SN: " + SerialNumber + "    \tModel: " + Model + "       \tTesterID: " + TesterID + "       \tErrCode: " + errorcode.ToString("X4") + "       \tTestResult: " + DUTTestResultToShopfloor, LogDetailLevel.LogRelevant);
+
                     }
                     catch (Exception ex)
                     {

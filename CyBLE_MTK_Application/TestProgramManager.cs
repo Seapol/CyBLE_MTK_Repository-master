@@ -880,7 +880,7 @@ namespace CyBLE_MTK_Application
 
             DUTTmplSFCSErrCode = new UInt16[NumberOfDUTs, TestProgram.Count];
 
-            if (!CyBLEMTKRobotServer.IsGlobalServerActive() && CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun > 0)
+            if (CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun > 0)
             {
                 for (int i = 0; i < CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun; i++)
                 {
@@ -904,6 +904,10 @@ namespace CyBLE_MTK_Application
                         break;
                     }
                     else if (CyBLE_MTK_Application.Properties.Settings.Default.SFCSInterface.ToLower().Contains("fittec"))
+                    {
+                        break;
+                    }
+                    else if (CyBLEMTKRobotServer.IsGlobalServerActive())
                     {
                         break;
                     }
@@ -1066,7 +1070,11 @@ namespace CyBLE_MTK_Application
 
         private bool CheckAllDutsPermissionFailure()
         {
-            
+            if (CyBLE_MTK_Application.Properties.Settings.Default.SFCSInterface.ToLower().Contains("local"))
+            {
+                return false;
+            }
+
             int cnt = 0;
             foreach (var item in CyBLE_MTK.shopfloor_permission)
             {

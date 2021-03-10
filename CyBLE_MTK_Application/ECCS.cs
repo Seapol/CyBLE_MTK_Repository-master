@@ -98,9 +98,12 @@ namespace CyBLE_MTK_Application
                 for (int i=0; i<NumOfDUTs;i++)
                 {
                     errorcodesforallprogram.Add(ERRORCODE_ALLPROG_TEST_INIT_NA);
+
+
+
                 }
 
-                
+
 
 
             }
