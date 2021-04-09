@@ -2542,39 +2542,20 @@ namespace CyBLE_MTK_Application
         /// </summary>
         private void MTKTestProgram_OnShopfloorPermissionCheckFail(int CurrentDUT)
         {
-            try
+            if (DUTInfoDataGridView.Rows[CurrentDUT].Cells["Serial Port"].Value != "Configure...")
             {
-                if (DUTInfoDataGridView.Rows[CurrentDUT].Cells["Serial Port"].Value == "Configure...")
-                {
-                    MTKTestProgram_OnIgnoreDUT();
-                }
-                else
-                {
-                    ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
-                    this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.DarkRed, BackColor = Color.Pink }));
-                    if ((CyBLE_MTK_Application.Properties.Settings.Default.SFCSInterface.ToLower().Contains("local") || (MTKTestProgram.SupervisorMode)))
-                    {
-                        this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "FAIL"));
-                    }
-                    else
-                    {
-                        this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "PROCESS FAIL"));
-                    }
-                    
+                ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
+                this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.DarkRed, BackColor = Color.Pink }));
+                this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "PROCESS FAIL"));
 
-                    this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
-                    this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
-                }
+                this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
+                this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
             }
-            catch (Exception ex)
+            else
             {
-
-                MessageBox.Show(ex.Message);
+                
+                MTKTestProgram_OnIgnoreDUT();
             }
-
-            
-
-
 
             
         }
@@ -2592,7 +2573,8 @@ namespace CyBLE_MTK_Application
         private void MTKTestProgram_OnOverallFail()
         {
 
-            
+
+
             if ((CyBLE_MTK_Application.Properties.Settings.Default.PauseTestsOnFailure == true) && (MTKTestProgram.DeviceTestingComplete == false))
             {
                 MTKTestProgram.PauseTestProgram();
