@@ -28,8 +28,40 @@ namespace CypressSemiconductor.ChinaManufacturingTest
             set { message = value; }
         }
     }
-    
-    
+
+    public class Switch
+    {
+        public int PowerRelayDelay = 0;
+
+        protected bool devReadyStatus = false;
+
+        virtual public bool IsDevReady
+        {
+            get { return devReadyStatus; }
+        }
+
+        public virtual bool Connect(string ConnectString)
+        {
+            return false;
+        }
+
+        public virtual bool SetRelayWellA(byte RelaySetCh1, byte RelaySetCh2)
+        {
+            return false;
+        }
+
+        public virtual bool OpenAllSWChannels()
+        {
+            return false;
+        }
+
+        public virtual bool CloseAllSWChannels()
+        {
+            return false;
+        }
+
+    }
+
     public class Agilent
     {
         public static bool devReadyStatus = false;

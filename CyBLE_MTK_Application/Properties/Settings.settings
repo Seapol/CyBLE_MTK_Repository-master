@@ -257,6 +257,24 @@
     <Setting Name="SQLServerDataBaseEnable" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="TestModeLongRun" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="DUTTestInfoRemarks" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TXPPowerLevel" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="TXPNumOfPackets" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="TXCDurationMS" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="CyBLE_RSSI_LowerLimitDBM" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-70</Value>
+    </Setting>
     <Setting Name="DUTProgrammerName" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
@@ -547,23 +565,25 @@
   &lt;string&gt;Com21&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="TestModeLongRun" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="CurtBrdSerialPort" Type="System.String" Scope="User">
+      <Value Profile="(Default)">COM22</Value>
     </Setting>
-    <Setting Name="DUTTestInfoRemarks" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="dataConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\data.mdb&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.OleDb&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\data.mdb</Value>
     </Setting>
-    <Setting Name="TXPPowerLevel" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="CurrentTestMethod" Type="System.String" Scope="User">
+      <Value Profile="(Default)">MTKCurrentBoard</Value>
     </Setting>
-    <Setting Name="TXPNumOfPackets" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1000</Value>
+    <Setting Name="boardV2_IntervalMS" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
     </Setting>
-    <Setting Name="TXCDurationMS" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1000</Value>
-    </Setting>
-    <Setting Name="CyBLE_RSSI_LowerLimitDBM" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-80</Value>
+    <Setting Name="boardV2_NSamples" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8</Value>
     </Setting>
   </Settings>
 </SettingsFile>

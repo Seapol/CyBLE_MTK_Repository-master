@@ -87,7 +87,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>bin\CyBLE_MTK_Release_4.6.0_CYBLE-022001-00_STE\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -166,7 +166,7 @@
     </Reference>
     <Reference Include="HexadecimalTextBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HexadecimalTextBox\bin\Release\HexadecimalTextBox.dll</HintPath>
+      <HintPath>..\HexadecimalTextBox\bin\x86\Release\HexadecimalTextBox.dll</HintPath>
     </Reference>
     <Reference Include="Ivi.Visa.Interop">
       <HintPath>.\Ivi.Visa.Interop.dll</HintPath>
@@ -294,12 +294,24 @@
     <Compile Include="CyBLEMTKSplashScreen.Designer.cs">
       <DependentUpon>CyBLEMTKSplashScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="CyBLE_Current_Test_OnCurBrd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CyBLE_Current_Test_OnCurBrd.Designer.cs">
+      <DependentUpon>CyBLE_Current_Test_OnCurBrd.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataAnalysisForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DataAnalysisForm.Designer.cs">
       <DependentUpon>DataAnalysisForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="dataDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dataDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataHelper.cs" />
     <Compile Include="DmmSwitchSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -315,6 +327,7 @@
     <Compile Include="ECCS.cs" />
     <Compile Include="EnumPassConOverall.cs" />
     <Compile Include="EquipmentScriptInterpreter.cs" />
+    <Compile Include="HCISupport.cs" />
     <Compile Include="ManufacturingModeSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -323,10 +336,12 @@
     </Compile>
     <Compile Include="MFGTestSanityCheck.cs" />
     <Compile Include="MicrosoftSQLDB.cs" />
+    <Compile Include="MTKCurrentMeasureBoard.cs" />
     <Compile Include="MTKDB.cs" />
     <Compile Include="MTKInstruments.cs" />
     <Compile Include="MTKRecord.cs" />
     <Compile Include="MTKTest.cs" />
+    <Compile Include="MTKTestCurrent.cs" />
     <Compile Include="MTKTestDelay.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -503,6 +518,9 @@
     <EmbeddedResource Include="CyBLEMTKSplashScreen.resx">
       <DependentUpon>CyBLEMTKSplashScreen.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CyBLE_Current_Test_OnCurBrd.resx">
+      <DependentUpon>CyBLE_Current_Test_OnCurBrd.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataAnalysisForm.resx">
       <DependentUpon>DataAnalysisForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -609,6 +627,17 @@
     </None>
     <None Include="CyBLE MTK Application_TemporaryKey.pfx" />
     <None Include="CyBLEMTKRobotServer.cd" />
+    <None Include="dataDataSet.xsc">
+      <DependentUpon>dataDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="dataDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dataDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="dataDataSet.xss">
+      <DependentUpon>dataDataSet.xsd</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="ParamConfig.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -699,6 +728,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Go1.png" />
+    <Content Include="data.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Readme.txt" />
     <None Include="Resources\refresh_green.bmp" />
     <None Include="Resources\Refresh_32px_523850_easyicon.net.png" />

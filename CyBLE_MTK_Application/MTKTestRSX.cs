@@ -285,6 +285,8 @@ namespace CyBLE_MTK_Application
 
         private MTKTestError RunTestUART()
         {
+            DataHelper dataHelper = new DataHelper(Log);
+
             int PercentageComplete = 0;
             int DelayPerCommand = 20;//, msPerSecond = 1000;
             //int TimeForEachPacket = 700;
@@ -328,7 +330,7 @@ namespace CyBLE_MTK_Application
             Command = "RRS";
             CommandRetVal = SendCommand(MTKSerialPort, Command, DelayPerCommand);
 
-            this.Log.PrintLog(this, String.Format("Get RSSI Value on CH {0}: {1}",ChannelNumber.ToString(),CommandResult), LogDetailLevel.LogRelevant);
+            this.Log.PrintLog(this, String.Format("(DUT#{0}@{1}) Get RSSI Value on CH {2}: {3}", CurrentDUT+1,DUTSerialPort.PortName, ChannelNumber.ToString(),CommandResult), LogDetailLevel.LogRelevant);
 
             
 
@@ -353,6 +355,8 @@ namespace CyBLE_MTK_Application
             
 
             int CommandResultsValue = int.Parse(CommandResult.Replace("dBm",""));
+
+            dataHelper.AcquireRSSIvalue(ChannelNumber, CommandResultsValue);
 
             if (CommandResultsValue < CyBLE_MTK_Application.Properties.Settings.Default.CyBLE_RSSI_LowerLimitDBM)
             {

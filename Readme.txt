@@ -1,4 +1,7 @@
 Release notes:
+2021-10-18 (v4.6.0)
+1.Test development for CyBLE Current Test on MTK-CURRENT-MEASUREMENT-BOARD V2.0
+
 2021-03-06 (v4.5.0)
 1.Test development for CyBLE RSSI 
 

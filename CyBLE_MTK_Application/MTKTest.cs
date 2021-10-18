@@ -22,7 +22,8 @@ namespace CyBLE_MTK_Application
     public partial class MTKTest
     {
         protected LogManager Log;
-        protected SerialPort MTKSerialPort, DUTSerialPort;
+        protected SerialPort MTKSerialPort, CurtBrdSerialPort, DUTSerialPort;
+       
         protected string CommandResult;
         protected string[] CommandResults;
         protected MTKTestResult TestResult;
@@ -78,6 +79,17 @@ namespace CyBLE_MTK_Application
             U3606A_Alias = U3606A_AliasName;
             MTKSerialPort = MTKPort;
             DUTSerialPort = DUTPort;
+            MTKSerialPort.BaudRate = 115200;
+
+        }
+
+        public MTKTest(LogManager Logger, SerialPort MTKPort, SerialPort CurtBrdPort ,SerialPort DUTPort)
+    : this(Logger)
+        {
+            CurtBrdSerialPort = CurtBrdPort;
+            MTKSerialPort = MTKPort;
+            DUTSerialPort = DUTPort;
+            
             MTKSerialPort.BaudRate = 115200;
 
         }

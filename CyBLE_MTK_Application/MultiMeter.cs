@@ -19,7 +19,7 @@ namespace CypressSemiconductor.ChinaManufacturingTest
         public bool devReadyStatus = false;
         public static string IDN_MultiMeter = "Missing DMM";
 
-        public struct current
+        public struct Current
         {
             public double max;
             public double min;
@@ -36,6 +36,47 @@ namespace CypressSemiconductor.ChinaManufacturingTest
         {
             ioMultiMeterCntrl = null;
         }
+
+        #region CurrentTestBrd
+
+        virtual public bool IsDevReady
+        {
+            get { return devReadyStatus; }
+        }
+
+        virtual public bool Connect(string ConnectString)
+        {
+            return false;
+        }
+
+        virtual public Current MeasureChannelCurrent(int MeasureMs)
+        {
+            Current cur = new Current();
+            cur.max = cur.average = cur.min = 0;
+            return cur;
+        }
+
+        protected int CurrResutMultiplier = 1000;
+
+        public void SetCurrentUnit(string UnitStr)
+        {
+            if (UnitStr.ToLower().Trim() == "ma")
+            {
+                CurrResutMultiplier = 1;
+            }
+            else
+            {
+                CurrResutMultiplier = 1000;
+            }
+        }
+
+        virtual public bool IsMTKCurrentMeasureBoard()
+        {
+            return false;
+        }
+
+
+        #endregion
 
         #region U3606A Methods
         private bool U3606A_Connect(string connectString)
@@ -120,11 +161,11 @@ namespace CypressSemiconductor.ChinaManufacturingTest
             return devReadyStatus;
         }
 
-        public current MeasureChannelCurrent(int DelayBeforeMeasureMs, int DelayAfterMeasureMs)
+        public Current MeasureChannelCurrent(int DelayBeforeMeasureMs, int DelayAfterMeasureMs)
         {
             lock (ioMultiMeterCntrl)
             {
-                current ch_current = new current();
+                Current ch_current = new Current();
 
                 ioMultiMeterCntrl.WriteString("CALC:STAT ON", true);             //turn on the calculation function
                 ioMultiMeterCntrl.WriteString("CALC:FUNC AVER", true);      //calculation function is Average

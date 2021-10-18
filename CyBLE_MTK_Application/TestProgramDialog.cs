@@ -23,7 +23,7 @@ namespace CyBLE_MTK_Application
         private List<MTKTest> BackupList;
         private string[] BackupTests;
         private int BackupSelectedTest;
-        private SerialPort MTKPort, DUTPort;
+        private SerialPort MTKPort, CurtBrdPort, DUTPort;
         private string[] ListOfAvailableTests = {
                                                     "RX Packet Error Rate (PER) Test",
                                                     "TX Packet Error Rate (PER) Test",
@@ -86,11 +86,12 @@ namespace CyBLE_MTK_Application
             TestProgramOpenEditIndex = -1;
         }
 
-        public TestProgramDialog(LogManager Logger, SerialPort MTKSerialPort, SerialPort DUTSerialPort) : this()
+        public TestProgramDialog(LogManager Logger, SerialPort MTKSerialPort, SerialPort CurtBrdSerialPort, SerialPort DUTSerialPort) : this()
         {
             Log = Logger;
             MTKPort = MTKSerialPort;
             DUTPort = DUTSerialPort;
+            CurtBrdPort = CurtBrdSerialPort;
         }
 
         public List<MTKTest> CopyTestList(List<MTKTest> InputList)
@@ -349,7 +350,7 @@ namespace CyBLE_MTK_Application
             else if (AvailableTestListBox.GetItemText(AvailableTestListBox.SelectedItem) == ListOfAvailableTests[16])
             {
                 
-                MTKTestDUTCurrentMeasure dutCurrMeas = new MTKTestDUTCurrentMeasure(Log, MTKPort, DUTPort);
+                MTKTestDUTCurrentMeasure dutCurrMeas = new MTKTestDUTCurrentMeasure(Log, MTKPort, CurtBrdPort , DUTPort);
                 DUTCurrentMeasureDialog temp = new DUTCurrentMeasureDialog();
                 if (temp.ShowDialog() == DialogResult.OK)
                 {

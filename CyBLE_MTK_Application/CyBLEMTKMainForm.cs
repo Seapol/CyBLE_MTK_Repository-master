@@ -31,7 +31,7 @@ namespace CyBLE_MTK_Application
     {
 
         private LogManager Logger;
-        private SerialPortSettingsDialog MTKSerialPortDialog, DUTSerialPortDialog;
+        private SerialPortSettingsDialog MTKSerialPortDialog, DUTSerialPortDialog, CurtBrdSerialPortDialog;
         private PreferencesDialog MTKPreferences;
         private bool UpdateTestInfo;
         private string BackupWindowText;
@@ -217,6 +217,35 @@ namespace CyBLE_MTK_Application
             }
             SplashScreen.LoadStatus += 8;
 
+            #region setup Serial Port for CurrentTestBoard
+            SplashScreen.LoadMessage = "Setting up Current Test Board serial port dialog...";
+            CurtBrdSerialPortDialog = new SerialPortSettingsDialog(Logger);
+            CurtBrdSerialPortDialog.ID = 0x20;
+            CurtBrdSerialPortDialog.Text = "Current Test Board Serial Port Setting";
+            CurtBrdSerialPortDialog.SerialPortType = PortType.CurrentTestBrd;
+            CurtBrdSerialPortDialog.CloseOnConnect = CyBLE_MTK_Application.Properties.Settings.Default.CloseSerialDialog;
+            CurtBrdSerialPortDialog.AutoVerifyON = true;
+            CurtBrdStatus.BackColor = Color.Red;
+            CurtBrdSerialPortDialog.OnCurtBrdConnectionStatusChange += new SerialPortSettingsDialog.ConnectionEventHandler(CurtBrdSerialPortDialog_OnConnectionStatusChange);
+            CurtBrdSerialPortDialog.DeviceSerialPort.PortName = CyBLE_MTK_Application.Properties.Settings.Default.CurtBrdSerialPort;
+            try
+            {
+                CurtBrdSerialPortDialog.DeviceSerialPort.Open();
+                CurtBrdStatus.BackColor = Color.Green;
+                SplashScreen.LoadMessage = $"Setting up Current Test Board serial port {CurtBrdSerialPortDialog.DeviceSerialPort.PortName} successfully...";
+                Logger.PrintLog(this, $"Setting up Current Test Board serial port {CurtBrdSerialPortDialog.DeviceSerialPort.PortName} successfully...", LogDetailLevel.LogRelevant);
+            }
+            catch (Exception)
+            {
+
+                SplashScreen.LoadMessage = $"Setting up Current Test Board serial port {CurtBrdSerialPortDialog.DeviceSerialPort.PortName} failure...";
+                Logger.PrintLog(this, $"Setting up Current Test Board serial port {CurtBrdSerialPortDialog.DeviceSerialPort.PortName} failure... " +
+                    $"Hint: it is predefined in the AppConfig file, please check it in the device manager and manually connect it. ", LogDetailLevel.LogRelevant);
+            }
+            SplashScreen.LoadStatus += 8;
+
+            #endregion
+
             SplashScreen.LoadMessage = "Setting up DUT serial port dialog...";
             DUTSerialPortDialog = new SerialPortSettingsDialog(Logger);
             DUTSerialPortDialog.ID = 0x10;
@@ -400,7 +429,7 @@ namespace CyBLE_MTK_Application
             SplashScreen.LoadStatus += 4;
 
             SplashScreen.LoadMessage = "Setting up test manager...";
-            MTKTestProgram = new TestProgramManager(Logger, MTKSerialPortDialog.DeviceSerialPort, DUTSerialPortDialog.DeviceSerialPort);
+            MTKTestProgram = new TestProgramManager(Logger, MTKSerialPortDialog.DeviceSerialPort, CurtBrdSerialPortDialog.DeviceSerialPort ,DUTSerialPortDialog.DeviceSerialPort);
             MTKTestProgram.SupervisorMode = this.SupervisorModeMenuItem.Checked;
             MTKTestProgram.IgnoreDUT = CyBLE_MTK_Application.Properties.Settings.Default.IgnoreDUTs;
             MTKTestProgram.OnTestProgramRunError += new TestProgramManager.TestProgramRunErrorEventHandler(MTKTestProgram_OnTestProgramRunError); 
@@ -521,6 +550,9 @@ namespace CyBLE_MTK_Application
             PSoCProgrammingResultAtBegin = "--";
             PSoCProgrammingResultAtEnd = "--";
             TestProgramRunCycleTimeForBatch = "0.00";
+
+            //
+            //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
         }
 
         /// <summary>
@@ -1675,7 +1707,7 @@ namespace CyBLE_MTK_Application
         {
             Logger.PrintLog(this, "Editing test program.", LogDetailLevel.LogRelevant);
 
-            TestProgramDialog EditTests = new TestProgramDialog(Logger, MTKSerialPortDialog.DeviceSerialPort, DUTSerialPortDialog.DeviceSerialPort);
+            TestProgramDialog EditTests = new TestProgramDialog(Logger, MTKSerialPortDialog.DeviceSerialPort, CurtBrdSerialPortDialog.DeviceSerialPort, DUTSerialPortDialog.DeviceSerialPort);
             EditTests.EnableMessages = CyBLE_MTK_Application.Properties.Settings.Default.EnableTestProgDialogMsg;
             EditTests.TestProgramList = MTKTestProgram.TestProgram;//EditTests.CopyTestList(MTKTestProgram.TestProgram);
             EditTests.TestProgramOpenEditIndex = PreSelectIndex;
@@ -3008,7 +3040,38 @@ namespace CyBLE_MTK_Application
 
             //SetRowCntOfDUTDatainfoGridViewByDUTTestFlags(DUTsTestFlag);
 
+            if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
+            {
+                MTKTestProgram.CurtBrdSerialPort = CurtBrdSerialPortDialog.DeviceSerialPort;
 
+                if (Connect2CurtBrd(CurtBrdSerialPortDialog.DeviceSerialPort))
+                {
+                    //Power On all DUTs
+                    if (MTKCurrentMeasureBoard.Board.SW.CloseAllSWChannels())
+                    {
+                        Logger.PrintLog(this, string.Format("[SUCC]: SUCC to Power On all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                        
+                    }
+                    else
+                    {
+                        Logger.PrintLog(this, string.Format("[ERROR]: Fail to Power On all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                        return;
+                    }
+                    
+                    ////Power Off all DUTs
+                    //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
+                }
+                else
+                {
+                    Logger.PrintLog(this, string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                    return;
+                }
+            }
+
+            
+
+            
+            
 
             RedirectTheFirstFinalRowIndexfromDUTInfoDataGridView();
 
@@ -3371,10 +3434,61 @@ namespace CyBLE_MTK_Application
                 BackupAndApplyAppStatus("Running test program...");
             }
 
+            
+
+            
 
         }
 
+        public bool Connect2CurtBrd(SerialPort SPort)
+        {
+            bool retVal = false;
 
+            if (SPort.IsOpen)
+            {
+                SPort.Close();
+            }
+
+            if (MTKCurrentMeasureBoard.Board.Connected())
+            {
+                MTKCurrentMeasureBoard.Board.SPort.Close();
+            }
+
+            SPort.Handshake = Handshake.RequestToSend;
+            SPort.BaudRate = 115200;
+            SPort.WriteTimeout = 1000;
+            SPort.ReadTimeout = 1000;
+
+
+            try
+            {
+                SPort.Open();
+                List<string> Rets;
+                if (HCISupport.Who(SPort, Logger, this, out Rets))
+                {
+                    if (Rets[0] == "HOST" &&
+                        Rets[1] == "819")
+                    {
+                        MTKCurrentMeasureBoard.Board.Connect(SPort);
+                        retVal = true;
+                    }
+                }
+                else
+                {
+                    SPort.Close();
+                    MessageBox.Show(SPort.PortName + " - is not MTK-CURRENT-MEASURE-BOARD.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+            }
+            catch
+            {
+                MessageBox.Show(SPort.PortName + " - is in use.",
+                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return retVal;
+        }
 
         private void IgnoringDUTsocketByDUTSerialPort()
         {
@@ -4014,6 +4128,28 @@ namespace CyBLE_MTK_Application
                 if (IsHandleCreated)
                 {
                     this.Invoke(new MethodInvoker(() => HostStatus.BackColor = Color.Red));
+                }
+            }
+        }
+
+        private void CurtBrdSerialPortDialog_OnConnectionStatusChange(string ConnStatus)
+        {
+            if (ConnStatus == "CONNECTED")
+            {
+                if (IsHandleCreated)
+                {
+                    this.Invoke(new MethodInvoker(() => CurtBrdStatus.BackColor = Color.Green));
+                }
+            }
+            else if (ConnStatus == "DISCONNECTED")
+            {
+                if (MTKSerialPortDialog.DeviceSerialPort.IsOpen)
+                {
+                    this.Invoke(new MethodInvoker(() => CurtBrdSerialPortDialog.DeviceSerialPort.Close()));
+                }
+                if (IsHandleCreated)
+                {
+                    this.Invoke(new MethodInvoker(() => CurtBrdStatus.BackColor = Color.Red));
                 }
             }
         }
@@ -5220,6 +5356,32 @@ namespace CyBLE_MTK_Application
 
             return retVal;
 
+        }
+
+        private void mTKCurrentMeasurementBoardV20SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CyBLE_Current_Test_OnCurBrd cyBLE_Current_Test_OnCurBrd_Dialog = new CyBLE_Current_Test_OnCurBrd();
+
+            cyBLE_Current_Test_OnCurBrd_Dialog.ShowDialog();
+
+        }
+
+        private void mTKCurrentMeasureBoardRev20ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CurtBrdSerialPortDialog.Text = "Current Test Board Serial Port Setting";
+            CurtBrdSerialPortDialog.CloseOnConnect = CyBLE_MTK_Application.Properties.Settings.Default.CloseSerialDialog;
+            CurtBrdSerialPortDialog.ShowDialog();
+            if (CurtBrdSerialPortDialog.DeviceSerialPort.IsOpen)
+            {
+                CyBLE_MTK_Application.Properties.Settings.Default.CurtBrdSerialPort = CurtBrdSerialPortDialog.DeviceSerialPort.PortName;
+                CyBLE_MTK_Application.Properties.Settings.Default.Save();
+
+                CurtBrdSerialPortDialog_OnConnectionStatusChange("CONNECTED");
+            }
+            else
+            {
+                CurtBrdSerialPortDialog_OnConnectionStatusChange("DISCONNECTED");
+            }
         }
 
         private MTKRecord FillinRecord(int CurrentDUT, string SerialNumber, string Model, string TesterID, UInt16 errorcode, string SocketId, string TestResult, string TestStation, string MFI_ID, string TestLog, string remarks)

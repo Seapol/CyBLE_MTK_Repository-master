@@ -2,6 +2,7 @@
 using System;
 
 
+
 namespace CyBLE_MTK_Application
 {
     public class MTKInstruments
@@ -11,7 +12,13 @@ namespace CyBLE_MTK_Application
         public static int DelayBeforeMeasure = CyBLE_MTK_Application.Properties.Settings.Default.DelayInMSBeforeDUTCurrentMeasure;
         public static int DelayAfterMeasure = CyBLE_MTK_Application.Properties.Settings.Default.DelayInMSAfterDUTCurrentMeasure;
 
-
+        public struct Current
+        {
+            public double max;
+            public double min;
+            public double average;
+            public CurrentUnit unit;
+        }
 
         public static Current DUTCurrent = new Current();
         public static int MeasUnitMultipler = 1000;
@@ -21,7 +28,8 @@ namespace CyBLE_MTK_Application
         public static bool AlldevReady = false;
 
 
-        private static Agilent sw;
+        private static Switch sw;
+        private static Agilent swA;
         private static MultiMeter dmm;
 
 
@@ -61,9 +69,9 @@ namespace CyBLE_MTK_Application
         {
             try
             {
-                sw = new Agilent();
-                SwConnected = sw.InitializeU2751A_WELLA(SW_alias);
-                sw.SetRelayWellA_ALLCLOSE();
+                swA = new Agilent();
+                SwConnected = swA.InitializeU2751A_WELLA(SW_alias);
+                swA.SetRelayWellA_ALLCLOSE();
                 //sw.InitializeU2651A(SW_alias);
             }
             catch (Exception ex)
@@ -126,7 +134,7 @@ namespace CyBLE_MTK_Application
             {
                 try
                 {
-                    MultiMeter.current MEASCurrent = dmm.MeasureChannelCurrent(DelayBeforeMeasure, DelayAfterMeasure);
+                    MultiMeter.Current MEASCurrent = dmm.MeasureChannelCurrent(DelayBeforeMeasure, DelayAfterMeasure);
 
                     //Convert reading value to mA value
                     switch (DUTCurrent.unit)
@@ -177,7 +185,7 @@ namespace CyBLE_MTK_Application
                 finally
                 {
                     //Switch On all DUTs
-                    sw.SetRelayWellA_ALLCLOSE();
+                    swA.SetRelayWellA_ALLCLOSE();
                 }
                  
 
@@ -211,12 +219,12 @@ namespace CyBLE_MTK_Application
                 if (PowerState == PowerSupplyState.PowerOn)
                 {
                     //close single channel
-                    sw.SetRelayWellA_byCH(channel_no, true);
+                    swA.SetRelayWellA_byCH(channel_no, true);
                 }
                 else
                 {
                     //open single channel
-                    sw.SetRelayWellA_byCH(channel_no, false);
+                    swA.SetRelayWellA_byCH(channel_no, false);
                 }
             }
             catch (Exception)
@@ -232,7 +240,7 @@ namespace CyBLE_MTK_Application
             try
             {
                 dmm = new MultiMeter();
-                sw = new Agilent();
+                swA = new Agilent();
 
                 logger = new LogManager();
 
@@ -254,7 +262,7 @@ namespace CyBLE_MTK_Application
                     ConnectSwitch();
                 }
 
-                sw.SetRelayWellA_ALLOPEN();
+                swA.SetRelayWellA_ALLOPEN();
 
             }
             catch (Exception)
@@ -274,7 +282,7 @@ namespace CyBLE_MTK_Application
                     ConnectSwitch();
                 }
 
-                sw.SetRelayWellA_ALLCLOSE();
+                swA.SetRelayWellA_ALLCLOSE();
 
                 return true;
 

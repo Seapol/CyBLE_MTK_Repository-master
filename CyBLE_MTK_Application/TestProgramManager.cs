@@ -25,6 +25,7 @@ namespace CyBLE_MTK_Application
         private LogManager Log;
         private SerialPort MTKSerialPort;
         public SerialPort DUTSerialPort;
+        public SerialPort CurtBrdSerialPort;
         private EventWaitHandle PauseTestEvent;
         private static TestProgramState CurrentTestStatus;
         public static string MTKTestResult_appendText = "";
@@ -159,20 +160,17 @@ namespace CyBLE_MTK_Application
             Log = Logger;
         }
 
-        public TestProgramManager(LogManager Logger, SerialPort MTKPort, SerialPort DUTPort, SerialPort AnritsuPort)
-            : this(Logger)
-        {
-            MTKSerialPort = MTKPort;
-            DUTSerialPort = DUTPort;
-            AnritsuSerialPort = AnritsuPort;
-        }
+        
 
-        public TestProgramManager(LogManager Logger, SerialPort MTKPort, SerialPort DUTPort)
+        public TestProgramManager(LogManager Logger, SerialPort MTKPort, SerialPort CurtBrdPort, SerialPort DUTPort)
             : this(Logger)
         {
             MTKSerialPort = MTKPort;
             DUTSerialPort = DUTPort;
-            
+            CurtBrdSerialPort = CurtBrdPort;
+
+
+
         }
 
         public bool SaveTestProgram(bool SaveAs)
@@ -439,7 +437,7 @@ namespace CyBLE_MTK_Application
                 }
                 else if (TestNode["Name"].InnerText == "MTKTestDUTCurrentMeasure")
                 {
-                    MTKTestDUTCurrentMeasure TempTest = new MTKTestDUTCurrentMeasure(Log, MTKSerialPort, DUTSerialPort);
+                    MTKTestDUTCurrentMeasure TempTest = new MTKTestDUTCurrentMeasure(Log, MTKSerialPort, CurtBrdSerialPort ,DUTSerialPort);
                     if (LoadTestParameters(TempTest, TestNode) == false)
                     {
                         return false;
@@ -927,12 +925,86 @@ namespace CyBLE_MTK_Application
 
             }
 
+            if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
+            {
 
+                
+
+                if (Connect2CurtBrd(CurtBrdSerialPort))
+                {
+                    //Power Off all DUTs
+                    if (MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels())
+                    {
+                        Log.PrintLog(this, string.Format("[SUCC]: SUCC to Power Off all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+
+                    }
+                    else
+                    {
+                        Log.PrintLog(this, string.Format("[ERROR]: Fail to Power Off all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                        MessageBox.Show(string.Format("[ERROR]: Fail to Power Off all DUTs via MTKCurrentBoard!!!"));
+                    }
+
+                    ////Power Off all DUTs
+                    //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
+                }
+                else
+                {
+                    Log.PrintLog(this, string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                    MessageBox.Show(string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"));
+                }
+            }
 
         }
 
+        private bool Connect2CurtBrd(SerialPort SPort)
+        {
+            bool retVal = false;
+
+            if (SPort.IsOpen)
+            {
+                SPort.Close();
+            }
+
+            if (MTKCurrentMeasureBoard.Board.Connected())
+            {
+                MTKCurrentMeasureBoard.Board.SPort.Close();
+            }
+
+            SPort.Handshake = Handshake.RequestToSend;
+            SPort.BaudRate = 115200;
+            SPort.WriteTimeout = 1000;
+            SPort.ReadTimeout = 1000;
 
 
+            try
+            {
+                SPort.Open();
+                List<string> Rets;
+                if (HCISupport.Who(SPort, Log, this, out Rets))
+                {
+                    if (Rets[0] == "HOST" &&
+                        Rets[1] == "819")
+                    {
+                        MTKCurrentMeasureBoard.Board.Connect(SPort);
+                        retVal = true;
+                    }
+                }
+                else
+                {
+                    SPort.Close();
+                    MessageBox.Show(SPort.PortName + " - is not MTK-CURRENT-MEASURE-BOARD.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+            }
+            catch
+            {
+                MessageBox.Show(SPort.PortName + " - is in use.",
+                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return retVal;
+        }
 
         public void _RunTestProgram(int NumIteration)
         {
@@ -973,7 +1045,7 @@ namespace CyBLE_MTK_Application
                     _CurrentDUT = j;
 
                     Log.PrintLog(this, "Selecting DUT " + (j + 1).ToString() + "/" +
-                        NumIteration.ToString() + " for tests", LogDetailLevel.LogRelevant);
+                        NumIteration.ToString() + " for tests", LogDetailLevel.LogEverything);
                     OnNextIteration(j);
 
                     if (CyBLE_MTK.DUTsTestFlag[j])
@@ -1014,8 +1086,9 @@ namespace CyBLE_MTK_Application
                     //}
                     else if (ReturnValue == MTKTestError.IgnoringDUT || ReturnValue == MTKTestError.ProgrammerNotConfigured || (!CyBLE_MTK.DUTsTestFlag[_CurrentDUT] && CyBLE_MTK.shopfloor_permission[_CurrentDUT]))
                     {
+                        
                         OnIgnoreDUT();
-                        Log.PrintLog(this, "Ignoring DUT# " + _CurrentDUT.ToString(), LogDetailLevel.LogRelevant);
+                        Log.PrintLog(this, "Ignoring DUT# " + _CurrentDUT.ToString(), LogDetailLevel.LogEverything);
                         DUTOverallSFCSErrCode[_CurrentDUT] = ECCS.ERRORCODE_DUT_NOT_TEST;
                         _Ignore = true;
                     }

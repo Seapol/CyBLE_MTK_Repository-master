@@ -8,13 +8,26 @@ using System.Threading;
 using System.Windows.Forms;
 using CypressSemiconductor.ChinaManufacturingTest;
 
+
+
 namespace CyBLE_MTK_Application
 {
     public class MTKTestDUTCurrentMeasure : MTKTest
     {
 
+        private SerialPort MTKSerialPort;
+        private SerialPort DUTSerialPort;
+        private SerialPort CurtBrdSerialPort;
+
+        EnumPassConOverall conOverall;
 
 
+        public struct Current
+        {
+            public double max;
+            public double min;
+            public double average;
+        }
 
         /// <summary>
         /// Test Parameters
@@ -58,11 +71,14 @@ namespace CyBLE_MTK_Application
             Init();
         }
 
-      public MTKTestDUTCurrentMeasure(LogManager Logger, SerialPort MTKPort, SerialPort DUTPort)
-        : base(Logger, MTKPort, DUTPort)
+      public MTKTestDUTCurrentMeasure(LogManager Logger, SerialPort MTKPort, SerialPort CurtBrdPort, SerialPort DUTPort)
+        : base(Logger, MTKPort, CurtBrdPort, DUTPort)
         {
-            
+            MTKSerialPort = MTKPort;
+            CurtBrdSerialPort = CurtBrdPort;
+            DUTSerialPort = DUTPort;
             Init();
+            
         }
 
         
@@ -211,7 +227,7 @@ namespace CyBLE_MTK_Application
         }
 
 
-
+        double current_meas = 0;
 
         private MTKTestError RunTestUART()
         {
@@ -220,8 +236,85 @@ namespace CyBLE_MTK_Application
 
             try
             {
+                int CH = (CurrentDUT - 1);
 
-                MTKInstruments.DUTCurrent = MTKInstruments.MeasureChannelCurrent(CurrentDUT);
+                
+
+                SerialPort SPort = new SerialPort();
+                SPort = CurtBrdSerialPort;
+
+                current_meas = 0;
+
+                if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
+                {
+                    try
+                    {
+                        if (SPort.IsOpen)
+                        {
+                            SPort.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Log.PrintLog(this, ex.Message, LogDetailLevel.LogRelevant);
+                    }
+                    
+
+                    Connect2CurtBrd(SPort);
+
+                    byte chmask = 0;
+
+                    switch (conOverall)
+                    {
+                        case EnumPassConOverall.ONE_SAMPLE:
+                            for (int i = 0; i < SamplesCount; i++)
+                            {
+                                current_meas = PerformCH_CurrentTest(CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[CurrentDUT]);
+                                if (current_meas >= DUTCurrentLowerLimitMilliAmp && current_meas <= DUTCurrentUpperLimitMilliAmp)
+                                {
+                                    //Pass
+                                    break;
+                                }
+
+                            }
+                            break;
+                        case EnumPassConOverall.ALL_SAMPLES:
+                            for (int i = 0; i < SamplesCount; i++)
+                            {
+                                current_meas = PerformCH_CurrentTest(CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[CurrentDUT]);
+                                if (current_meas <= DUTCurrentLowerLimitMilliAmp && current_meas >= DUTCurrentUpperLimitMilliAmp)
+                                {
+                                    //Fail
+                                    break;
+                                }
+
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                    
+
+                    
+
+                    
+
+                }
+                else if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
+                {
+                    MTKInstruments.DUTCurrent = MTKInstruments.MeasureChannelCurrent(CurrentDUT);
+                }
+                else
+                {
+                    Log.PrintLog(this, "[Warning]: No Available CurrentTestMethod selected!!!", LogDetailLevel.LogRelevant);
+                    RetVal = MTKTestError.TestFailed;
+                    TestResult.Result = "FAIL";
+                    TestResultUpdate(TestResult);
+                    TestStatusUpdate(MTKTestMessageType.Failure, "Fail");
+                }
+                
 
 
 
@@ -240,7 +333,7 @@ namespace CyBLE_MTK_Application
                 //Recover all duts' power on after testing.
                 if (!MTKInstruments.SwitchAllDutOn())
                 {
-                    this.Log.PrintLog(this, "Fail to recover power after current test.", LogDetailLevel.LogRelevant);
+                    this.Log.PrintLog(this, "Fail to recover power after current test.", LogDetailLevel.LogEverything);
                 }
 
             }
@@ -250,72 +343,124 @@ namespace CyBLE_MTK_Application
 
         }
 
-        private bool DoesSamplePass(Current dUTCurrent)
+        private double PerformCH_CurrentTest(bool CHstatus)
+        {
+            byte chmask = 0;
+            double current = 0;
+
+            for (int i = 0; i < CyBLE_Current_Test_OnCurBrd.SW_CH_Closed.Length; i++)
+            {
+                if (CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[i] == true)
+                {
+                    chmask |= (byte)(1 << i);
+                }
+            }
+
+
+
+            if (MTKCurrentMeasureBoard.Board.SW.SetRelayWellA((byte)(chmask & 0xf), (byte)((chmask & 0xF0) >> 4)))
+            {
+                //for (int i = 0; i < 8; i++)
+                //{
+                //    int CH = i;
+                //    current = MTKCurrentMeasureBoard.Board.DMM.MeasureCurrentAVG(CH);
+                //    Log.PrintLog(this, string.Format("[CH {0}] {1} mA", CH, current.ToString("F02")), LogDetailLevel.LogEverything);
+                //}
+
+                current = MTKCurrentMeasureBoard.Board.DMM.MeasureCurrentAVG(CurrentDUT - 1);
+                //Log.PrintLog(this, string.Format("[CH {0}] {1} mA", CurrentDUT - 1, current.ToString("F02")), LogDetailLevel.LogRelevant);
+            }
+
+            return current;
+        }
+
+        private bool Connect2CurtBrd(SerialPort SPort)
+        {
+
+            bool retVal = false;
+
+            if (SPort.IsOpen)
+            {
+                SPort.Close();
+            }
+
+
+            if (MTKCurrentMeasureBoard.Board.Connected())
+            {
+                MTKCurrentMeasureBoard.Board.SPort.Close();
+            }
+
+            SPort.Handshake = Handshake.RequestToSend;
+            SPort.BaudRate = 115200;
+            SPort.WriteTimeout = 1000;
+            SPort.ReadTimeout = 1000;
+
+
+            try
+            {
+                SPort.Open();
+                List<string> Rets;
+                if (HCISupport.Who(SPort, Log, this, out Rets))
+                {
+                    if (Rets[0] == "HOST" &&
+                        Rets[1] == "819")
+                    {
+                        MTKCurrentMeasureBoard.Board.Connect(SPort);
+                        retVal = true;
+                    }
+                }
+                else
+                {
+                    SPort.Close();
+                    MessageBox.Show(SPort.PortName + " - is not MTK-CURRENT-MEASURE-BOARD.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+            }
+            catch
+            {
+                MessageBox.Show(SPort.PortName + " - is in use.",
+                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return retVal;
+        }
+
+        private bool DoesSamplePass(double meas)
         {
             sample_failure_result_message = "Fail";
 
             
 
-            if (criterion_per_sample.ToUpper() == EnumPassConPerSample.AVERAGE.ToString())
+            
+            if (meas > DUTCurrentLowerLimitMilliAmp)
             {
-                if (dUTCurrent.average > DUTCurrentLowerLimitMilliAmp)
+                if (meas < DUTCurrentUpperLimitMilliAmp)
                 {
-                    if (dUTCurrent.average < DUTCurrentUpperLimitMilliAmp)
-                    {
-                        //Pass
-                        ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERRORCODE_ALL_PASS;
-                        TestResult.Measured += "#" + dUTCurrent.average.ToString();
-                        return true;
-                    }
-                    else
-                    {
-                        //Fail
-                        ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERROR_CODE_DMM_HIGH;
-                        sample_failure_result_message += "#" + dUTCurrent.average.ToString();
-                        TestResult.Measured += "#" + dUTCurrent.average.ToString();
-                        TestStatusUpdate(MTKTestMessageType.Failure, sample_failure_result_message);
-                    }
-                    
+                    //Pass
+                    ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERRORCODE_ALL_PASS;
+                    TestResult.Measured += string.Format("#{0}mA", meas.ToString("F02"));
+                    return true;
                 }
                 else
                 {
                     //Fail
-                    ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERROR_CODE_DMM_LOW;
-                    sample_failure_result_message += "#" + dUTCurrent.average.ToString();
-                    TestResult.Measured += "#" + dUTCurrent.average.ToString();
-                    TestStatusUpdate(MTKTestMessageType.Failure, sample_failure_result_message);
-                }
-            }
-            else
-            {
-                if (dUTCurrent.max > DUTCurrentLowerLimitMilliAmp)
-                {
-                    if (dUTCurrent.min < DUTCurrentUpperLimitMilliAmp)
-                    {
-                        //Pass
-                        ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERRORCODE_ALL_PASS;
-                        TestResult.Measured += "#" + dUTCurrent.average.ToString();
-                        return true;
-                    }
-                    else
-                    {
-                        //Fail
-                        ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERROR_CODE_DMM_HIGH;
-                        sample_failure_result_message += "#" + dUTCurrent.average.ToString();
-                        TestResult.Measured += "#" + dUTCurrent.average.ToString();
-                        TestStatusUpdate(MTKTestMessageType.Failure, sample_failure_result_message);
-                    }
-                    
-                }
-                else
-                {
-                    ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERROR_CODE_DMM_LOW;
-                    sample_failure_result_message += "#" + dUTCurrent.average.ToString();
-                    TestResult.Measured += "#" + dUTCurrent.average.ToString();
+                    ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERROR_CODE_DMM_HIGH;
+                    sample_failure_result_message += string.Format("#{0}mA", meas.ToString("F02"));
+                    TestResult.Measured += string.Format("#{0}mA", meas.ToString("F02"));
                     TestStatusUpdate(MTKTestMessageType.Failure, sample_failure_result_message);
                 }
 
             }
+            else
+            {
+                //Fail
+                ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERROR_CODE_DMM_LOW;
+                sample_failure_result_message += string.Format("#{0}mA", meas.ToString("F02"));
+                TestResult.Measured += string.Format("#{0}mA", meas.ToString("F02"));
+                TestStatusUpdate(MTKTestMessageType.Failure, sample_failure_result_message);
+            }
+
 
             MTKTestTmplSFCSErrCode = ERRORCODE_DUTCurrentMeasureFailure;
 
@@ -346,7 +491,7 @@ namespace CyBLE_MTK_Application
                     {
                         RetVal = RunTestUART();
                         loop--;
-                        if (DoesSamplePass(MTKInstruments.DUTCurrent)&& RetVal == MTKTestError.Pending)
+                        if (DoesSamplePass(current_meas) && RetVal == MTKTestError.Pending)
                         {
                             RetVal = MTKTestError.NoError;
                             break;
@@ -368,7 +513,7 @@ namespace CyBLE_MTK_Application
                         }
 
                         loop--;
-                        if (!DoesSamplePass(MTKInstruments.DUTCurrent))
+                        if (!DoesSamplePass(current_meas))
                         {
                             RetVal = MTKTestError.TestFailed;
                             break;
@@ -382,7 +527,8 @@ namespace CyBLE_MTK_Application
                         
                     }
                 }
-                
+
+                TestResultUpdate(TestResult);
 
                 //Overall TestResult
                 if (RetVal == MTKTestError.NoError)
@@ -390,6 +536,7 @@ namespace CyBLE_MTK_Application
                     ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERRORCODE_ALL_PASS;
                     TestStatusUpdate(MTKTestMessageType.Success, "Pass");
                     TestResult.Result = "Pass";
+                    
                 }
                 else
                 {
@@ -420,6 +567,27 @@ namespace CyBLE_MTK_Application
             sample_failure_result_message = "";
 
             CurrentMTKTestType = MTKTestType.MTKTestDUTCurrentMeasure;
+
+
+            
+
+            if (CyBLE_MTK_Application.Properties.Settings.Default.DUTCurrentMeasureOverallPassCondition.ToUpper().Contains("ALL"))
+            {
+                conOverall = EnumPassConOverall.ALL_SAMPLES;
+            }
+            else if (CyBLE_MTK_Application.Properties.Settings.Default.DUTCurrentMeasureOverallPassCondition.ToUpper().Contains("ONE"))
+            {
+                conOverall = EnumPassConOverall.ONE_SAMPLE;
+            }
+            else
+            {
+                conOverall = EnumPassConOverall.ALL_SAMPLES;
+            }
+
+
+            
+
+
         }
 
 
@@ -431,14 +599,14 @@ namespace CyBLE_MTK_Application
         MAX_AND_MIN = 1 //Check Max and Min average
     };
 
-    public struct Current
-    {
-        public double average;
-        public double max;
-        public double min;
+    //public struct Current
+    //{
+    //    public double average;
+    //    public double max;
+    //    public double min;
 
-        public CurrentUnit unit;
+    //    public CurrentUnit unit;
 
 
-    }
+    //}
 }

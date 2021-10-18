@@ -1045,6 +1045,78 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int TestModeLongRun {
+            get {
+                return ((int)(this["TestModeLongRun"]));
+            }
+            set {
+                this["TestModeLongRun"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DUTTestInfoRemarks {
+            get {
+                return ((string)(this["DUTTestInfoRemarks"]));
+            }
+            set {
+                this["DUTTestInfoRemarks"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int TXPPowerLevel {
+            get {
+                return ((int)(this["TXPPowerLevel"]));
+            }
+            set {
+                this["TXPPowerLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int TXPNumOfPackets {
+            get {
+                return ((int)(this["TXPNumOfPackets"]));
+            }
+            set {
+                this["TXPNumOfPackets"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int TXCDurationMS {
+            get {
+                return ((int)(this["TXCDurationMS"]));
+            }
+            set {
+                this["TXCDurationMS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-70")]
+        public int CyBLE_RSSI_LowerLimitDBM {
+            get {
+                return ((int)(this["CyBLE_RSSI_LowerLimitDBM"]));
+            }
+            set {
+                this["CyBLE_RSSI_LowerLimitDBM"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
   <string>Configure...</string>
@@ -1434,73 +1506,59 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int TestModeLongRun {
+        [global::System.Configuration.DefaultSettingValueAttribute("COM22")]
+        public string CurtBrdSerialPort {
             get {
-                return ((int)(this["TestModeLongRun"]));
+                return ((string)(this["CurtBrdSerialPort"]));
             }
             set {
-                this["TestModeLongRun"] = value;
+                this["CurtBrdSerialPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\\data.mdb")]
+        public string dataConnectionString {
+            get {
+                return ((string)(this["dataConnectionString"]));
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DUTTestInfoRemarks {
+        [global::System.Configuration.DefaultSettingValueAttribute("MTKCurrentBoard")]
+        public string CurrentTestMethod {
             get {
-                return ((string)(this["DUTTestInfoRemarks"]));
+                return ((string)(this["CurrentTestMethod"]));
             }
             set {
-                this["DUTTestInfoRemarks"] = value;
+                this["CurrentTestMethod"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int TXPPowerLevel {
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int boardV2_IntervalMS {
             get {
-                return ((int)(this["TXPPowerLevel"]));
+                return ((int)(this["boardV2_IntervalMS"]));
             }
             set {
-                this["TXPPowerLevel"] = value;
+                this["boardV2_IntervalMS"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
-        public int TXPNumOfPackets {
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public int boardV2_NSamples {
             get {
-                return ((int)(this["TXPNumOfPackets"]));
+                return ((int)(this["boardV2_NSamples"]));
             }
             set {
-                this["TXPNumOfPackets"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
-        public int TXCDurationMS {
-            get {
-                return ((int)(this["TXCDurationMS"]));
-            }
-            set {
-                this["TXCDurationMS"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-80")]
-        public int CyBLE_RSSI_LowerLimitDBM {
-            get {
-                return ((int)(this["CyBLE_RSSI_LowerLimitDBM"]));
-            }
-            set {
-                this["CyBLE_RSSI_LowerLimitDBM"] = value;
+                this["boardV2_NSamples"] = value;
             }
         }
     }

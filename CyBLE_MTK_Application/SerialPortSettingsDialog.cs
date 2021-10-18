@@ -43,6 +43,7 @@ namespace CyBLE_MTK_Application
 
         public event ConnectionEventHandler OnDUTConnectionStatusChange;
         public event ConnectionEventHandler OnHostConnectionStatusChange;
+        public event ConnectionEventHandler OnCurtBrdConnectionStatusChange;
 
         public delegate void ConnectionEventHandler(string ConnectionStatus);
 
