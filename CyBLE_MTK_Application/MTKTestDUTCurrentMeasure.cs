@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.IO.Ports;
 using System.Threading;
+using System.Diagnostics;
 using System.Windows.Forms;
 using CypressSemiconductor.ChinaManufacturingTest;
 
@@ -21,6 +22,7 @@ namespace CyBLE_MTK_Application
 
         EnumPassConOverall conOverall;
 
+        Stopwatch stopwatch = new Stopwatch();
 
         public struct Current
         {
@@ -234,6 +236,8 @@ namespace CyBLE_MTK_Application
             //TO DO something...
             MTKTestError RetVal = MTKTestError.Pending;
 
+            
+
             try
             {
                 int CH = (CurrentDUT - 1);
@@ -314,9 +318,9 @@ namespace CyBLE_MTK_Application
                     TestResultUpdate(TestResult);
                     TestStatusUpdate(MTKTestMessageType.Failure, "Fail");
                 }
+
+
                 
-
-
 
                 return RetVal;
 
@@ -473,6 +477,8 @@ namespace CyBLE_MTK_Application
 
             this.InitializeTestResult();
 
+            stopwatch.Restart();
+
             TestResult.Measured = " Result: ";
 
             if (this.DUTConnectionMode == DUTConnMode.BLE)
@@ -554,6 +560,10 @@ namespace CyBLE_MTK_Application
             }
 
             TestResultUpdate(TestResult);
+
+            stopwatch.Stop();
+
+            Log.PrintLog(this, string.Format("Test time elapsed： {0} secs", (((float)stopwatch.ElapsedMilliseconds)/1000).ToString("F02")), LogDetailLevel.LogRelevant);
 
             return RetVal;
         }
