@@ -114,6 +114,8 @@ namespace CyBLE_MTK_Application
 
         public bool PrintLog(object Sender, string Message, LogDetailLevel PrintDetailLevel)
         {
+            LogTextBox.ScrollToCaret();
+
             if (LogDetails >= PrintDetailLevel)
             {
                 string TimeStamp = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss.fff");
@@ -141,6 +143,8 @@ namespace CyBLE_MTK_Application
                     LogFile.WriteLine(TimeStamp + ": "
                         + Sender.GetType().Name + ": " + Message);
                 }
+
+                
 
                 return true;
             }

@@ -33,12 +33,12 @@ namespace CyBLE_MTK_Application
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CyBLE_MTK));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MTKMenuStrip = new System.Windows.Forms.MenuStrip();
             this.FileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NewTestProgramMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -156,7 +156,7 @@ namespace CyBLE_MTK_Application
             this.MTKMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MTKMenuStrip.Name = "MTKMenuStrip";
             this.MTKMenuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.MTKMenuStrip.Size = new System.Drawing.Size(1371, 28);
+            this.MTKMenuStrip.Size = new System.Drawing.Size(1371, 30);
             this.MTKMenuStrip.TabIndex = 0;
             this.MTKMenuStrip.Text = "MTK_menu";
             // 
@@ -177,7 +177,7 @@ namespace CyBLE_MTK_Application
             this.toolStripSeparator2,
             this.ExitMenuItem});
             this.FileMenuItem.Name = "FileMenuItem";
-            this.FileMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.FileMenuItem.Size = new System.Drawing.Size(46, 26);
             this.FileMenuItem.Text = "&File";
             // 
             // NewTestProgramMenuItem
@@ -279,7 +279,7 @@ namespace CyBLE_MTK_Application
             this.TestProgramMenuItem,
             this.PreferencesMenuItem});
             this.EditMenuItem.Name = "EditMenuItem";
-            this.EditMenuItem.Size = new System.Drawing.Size(49, 24);
+            this.EditMenuItem.Size = new System.Drawing.Size(49, 26);
             this.EditMenuItem.Text = "&Edit";
             // 
             // SupervisorModeMenuItem
@@ -324,7 +324,7 @@ namespace CyBLE_MTK_Application
             this.anritsuToolStripMenuItem,
             this.dUTSelectorToolStripMenuItem});
             this.SerialPortMenuItem.Name = "SerialPortMenuItem";
-            this.SerialPortMenuItem.Size = new System.Drawing.Size(90, 24);
+            this.SerialPortMenuItem.Size = new System.Drawing.Size(90, 26);
             this.SerialPortMenuItem.Text = "&Serial Port";
             // 
             // MTKHostToolStripMenuItem
@@ -363,7 +363,7 @@ namespace CyBLE_MTK_Application
             this.manufacturingModeConfigToolStripMenuItem,
             this.startRobotServerToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(58, 24);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(58, 26);
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
             // uARTTerminalToolStripMenuItem
@@ -423,7 +423,7 @@ namespace CyBLE_MTK_Application
             this.HelpMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AboutMenuItem});
             this.HelpMenuItem.Name = "HelpMenuItem";
-            this.HelpMenuItem.Size = new System.Drawing.Size(55, 24);
+            this.HelpMenuItem.Size = new System.Drawing.Size(55, 26);
             this.HelpMenuItem.Text = "&Help";
             // 
             // AboutMenuItem
@@ -452,7 +452,7 @@ namespace CyBLE_MTK_Application
             this.ApplicationStatusLabel,
             this.ApplicationStatus,
             this.toolStripStatusLabel6});
-            this.MTKStatStrip.Location = new System.Drawing.Point(0, 850);
+            this.MTKStatStrip.Location = new System.Drawing.Point(0, 878);
             this.MTKStatStrip.Name = "MTKStatStrip";
             this.MTKStatStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
             this.MTKStatStrip.Size = new System.Drawing.Size(1371, 26);
@@ -603,13 +603,13 @@ namespace CyBLE_MTK_Application
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.MainSplitContainer, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 28);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 30);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 590F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1371, 822);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 850F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1371, 848);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // MainSplitContainer
@@ -627,9 +627,10 @@ namespace CyBLE_MTK_Application
             // 
             // MainSplitContainer.Panel2
             // 
+            this.MainSplitContainer.Panel2.AutoScroll = true;
             this.MainSplitContainer.Panel2.Controls.Add(this.LogGroupBox);
-            this.MainSplitContainer.Size = new System.Drawing.Size(1371, 822);
-            this.MainSplitContainer.SplitterDistance = 481;
+            this.MainSplitContainer.Size = new System.Drawing.Size(1371, 848);
+            this.MainSplitContainer.SplitterDistance = 495;
             this.MainSplitContainer.SplitterWidth = 5;
             this.MainSplitContainer.TabIndex = 25;
             // 
@@ -647,7 +648,7 @@ namespace CyBLE_MTK_Application
             this.tableLayoutPanel4.RowCount = 1;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(1371, 481);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(1371, 495);
             this.tableLayoutPanel4.TabIndex = 24;
             // 
             // DUTInformationGroupBox
@@ -658,7 +659,7 @@ namespace CyBLE_MTK_Application
             this.DUTInformationGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.DUTInformationGroupBox.Name = "DUTInformationGroupBox";
             this.DUTInformationGroupBox.Padding = new System.Windows.Forms.Padding(4);
-            this.DUTInformationGroupBox.Size = new System.Drawing.Size(716, 473);
+            this.DUTInformationGroupBox.Size = new System.Drawing.Size(716, 487);
             this.DUTInformationGroupBox.TabIndex = 0;
             this.DUTInformationGroupBox.TabStop = false;
             this.DUTInformationGroupBox.Text = "DUT Information";
@@ -678,43 +679,43 @@ namespace CyBLE_MTK_Application
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel10.Size = new System.Drawing.Size(708, 450);
+            this.tableLayoutPanel10.Size = new System.Drawing.Size(708, 464);
             this.tableLayoutPanel10.TabIndex = 0;
             // 
             // DUTInfoDataGridView
             // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DUTInfoDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DUTInfoDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.DUTInfoDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DUTInfoDataGridView.ContextMenuStrip = this.DUTcontextMenuStrip;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DUTInfoDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DUTInfoDataGridView.DefaultCellStyle = dataGridViewCellStyle8;
             this.DUTInfoDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DUTInfoDataGridView.Location = new System.Drawing.Point(0, 68);
             this.DUTInfoDataGridView.Margin = new System.Windows.Forms.Padding(0);
             this.DUTInfoDataGridView.Name = "DUTInfoDataGridView";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DUTInfoDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DUTInfoDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.DUTInfoDataGridView.RowHeadersWidth = 51;
-            this.DUTInfoDataGridView.Size = new System.Drawing.Size(708, 382);
+            this.DUTInfoDataGridView.Size = new System.Drawing.Size(708, 396);
             this.DUTInfoDataGridView.TabIndex = 37;
             // 
             // DUTcontextMenuStrip
@@ -851,7 +852,7 @@ namespace CyBLE_MTK_Application
             this.tableLayoutPanel5.RowCount = 2;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(647, 481);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(647, 495);
             this.tableLayoutPanel5.TabIndex = 1;
             // 
             // TestProgramGroupBox
@@ -870,35 +871,35 @@ namespace CyBLE_MTK_Application
             // TestProgramGridView
             // 
             this.TestProgramGridView.AllowDrop = true;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.TestProgramGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.TestProgramGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.TestProgramGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.TestProgramGridView.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.TestProgramGridView.DefaultCellStyle = dataGridViewCellStyle2;
             this.TestProgramGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TestProgramGridView.Location = new System.Drawing.Point(4, 19);
             this.TestProgramGridView.Margin = new System.Windows.Forms.Padding(0);
             this.TestProgramGridView.Name = "TestProgramGridView";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.TestProgramGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.TestProgramGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.TestProgramGridView.RowHeadersWidth = 51;
             this.TestProgramGridView.Size = new System.Drawing.Size(631, 1012);
             this.TestProgramGridView.TabIndex = 0;
@@ -1028,34 +1029,27 @@ namespace CyBLE_MTK_Application
             this.LogGroupBox.Controls.Add(this.LogTextBox);
             this.LogGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LogGroupBox.Location = new System.Drawing.Point(0, 0);
-            this.LogGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.LogGroupBox.Name = "LogGroupBox";
-            this.LogGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 500, 4);
-            this.LogGroupBox.Size = new System.Drawing.Size(1371, 336);
-            this.LogGroupBox.TabIndex = 23;
+            this.LogGroupBox.Size = new System.Drawing.Size(1371, 348);
+            this.LogGroupBox.TabIndex = 0;
             this.LogGroupBox.TabStop = false;
             this.LogGroupBox.Text = "Log";
             // 
             // LogTextBox
             // 
-            this.LogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.LogTextBox.BackColor = System.Drawing.SystemColors.Window;
-            this.LogTextBox.Location = new System.Drawing.Point(4, 17);
-            this.LogTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.LogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LogTextBox.Location = new System.Drawing.Point(3, 18);
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
-            this.LogTextBox.ReadOnly = true;
             this.LogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.LogTextBox.Size = new System.Drawing.Size(1361, 318);
-            this.LogTextBox.TabIndex = 6;
+            this.LogTextBox.Size = new System.Drawing.Size(1365, 327);
+            this.LogTextBox.TabIndex = 0;
             // 
             // CyBLE_MTK
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1371, 876);
+            this.ClientSize = new System.Drawing.Size(1371, 904);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.MTKStatStrip);
             this.Controls.Add(this.MTKMenuStrip);
@@ -1140,8 +1134,6 @@ namespace CyBLE_MTK_Application
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
         private System.Windows.Forms.Button ResetTestButton;
         private System.Windows.Forms.Button TestRunStopButton;
-        private System.Windows.Forms.GroupBox LogGroupBox;
-        private System.Windows.Forms.TextBox LogTextBox;
         private System.Windows.Forms.Button StopButton;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
@@ -1181,6 +1173,8 @@ namespace CyBLE_MTK_Application
         private System.Windows.Forms.ToolStripMenuItem turnOnDBToolStripMenuItem;
         private System.Windows.Forms.Button ProgAddrSave_Btn;
         private System.Windows.Forms.ToolStripStatusLabel CurtBrdStatus;
+        private System.Windows.Forms.GroupBox LogGroupBox;
+        private System.Windows.Forms.TextBox LogTextBox;
     }
 }
 
