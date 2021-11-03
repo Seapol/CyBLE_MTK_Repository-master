@@ -445,6 +445,7 @@ namespace CyBLE_MTK_Application
             MTKTestProgram.DUTConnectionType = CyBLE_MTK_Application.Properties.Settings.Default.ConnectionType;
             MTKTestProgram.OnDUTPortOpen += new TestProgramManager.SerialPortEventHandler(MTKTestProgram_OnDUTPortOpen);
             MTKTestProgram.OnMTKPortOpen += new TestProgramManager.SerialPortEventHandler(MTKTestProgram_OnMTKPortOpen);
+            MTKTestProgram.OnCrtBrdPortOpen += new TestProgramManager.SerialPortEventHandler(MTKTestProgram_OnCrtBrdPortOpen);
             MTKTestProgram.OnAnritsuPortOpen += new TestProgramManager.SerialPortEventHandler(MTKTestProgram_OnAnritsuPortOpen);
             MTKTestProgram.OnIgnoreDUT += new TestProgramManager.IgnoreDUTEventHandler(MTKTestProgram_OnIgnoreDUT);
             
@@ -553,6 +554,16 @@ namespace CyBLE_MTK_Application
 
             //
             //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
+        }
+
+        private void MTKTestProgram_OnCrtBrdPortOpen()
+        {
+            this.Invoke(new MethodInvoker(() => OnCrtBrdPortOpen()));
+        }
+
+        private void OnCrtBrdPortOpen()
+        {
+            this.Invoke(new MethodInvoker(() => CurtBrdStatus.BackColor = Color.Green));
         }
 
         /// <summary>
@@ -2574,14 +2585,31 @@ namespace CyBLE_MTK_Application
         /// </summary>
         private void MTKTestProgram_OnShopfloorPermissionCheckFail(int CurrentDUT)
         {
+            
+
             if (DUTInfoDataGridView.Rows[CurrentDUT].Cells["Serial Port"].Value != "Configure...")
             {
-                ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
-                this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.DarkRed, BackColor = Color.Pink }));
-                this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "PROCESS FAIL"));
 
-                this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
-                this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
+                if (CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun > 1)
+                {
+                    ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
+                    this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.Red, BackColor = Color.Pink }));
+                    this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "FAIL"));
+
+                    this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
+                    this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
+                }
+                else
+                {
+                    ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
+                    this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.DarkRed, BackColor = Color.Pink }));
+                    this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "PROCESS FAIL"));
+
+                    this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
+                    this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
+                }
+
+                
             }
             else
             {

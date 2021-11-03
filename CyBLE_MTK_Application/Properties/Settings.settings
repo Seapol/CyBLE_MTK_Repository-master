@@ -207,7 +207,7 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="CUSTestRRSRetryInTheBeginning" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
+      <Value Profile="(Default)">5</Value>
     </Setting>
     <Setting Name="DelayPerCommandSTC_Additional" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
@@ -273,7 +273,7 @@
       <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="CyBLE_RSSI_LowerLimitDBM" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-70</Value>
+      <Value Profile="(Default)">-90</Value>
     </Setting>
     <Setting Name="DUTProgrammerName" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
@@ -566,7 +566,7 @@
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
     <Setting Name="CurtBrdSerialPort" Type="System.String" Scope="User">
-      <Value Profile="(Default)">COM22</Value>
+      <Value Profile="(Default)">COM30</Value>
     </Setting>
     <Setting Name="dataConnectionString" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
@@ -584,6 +584,12 @@
     </Setting>
     <Setting Name="boardV2_NSamples" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="PowerOn_OverCurrentUSL_mA" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">40</Value>
+    </Setting>
+    <Setting Name="PowerOff_CurrentUSL_mA" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>
 </SettingsFile>

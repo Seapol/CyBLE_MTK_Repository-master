@@ -179,6 +179,43 @@ namespace CyBLE_MTK_Application
         {
             return "#SwitchBoard" + SPort.PortName;
         }
+
+        internal bool CloseSWChannel(int CH)
+        {
+            bool retVal = false;
+
+            byte chmask = 0;
+
+
+
+            for (int i = 0; i < CyBLE_Current_Test_OnCurBrd.SW_CH_Closed.Length; i++)
+            {
+                
+                if ((i+1)==CH)
+                {
+                    CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[i] = true;
+                    chmask |= (byte)(1 << i);
+                }
+                else
+                {
+                    CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[i] = false;
+                }
+                
+            }
+
+
+            if (SetRelayWellA((byte)(chmask & 0xf), (byte)((chmask & 0xF0) >> 4)))
+            {
+                retVal = true;
+            }
+
+
+            
+
+            Log.PrintLog(this, string.Format("[#DUT{0}|{1}] is SW CH Closed.",CH,chmask), LogDetailLevel.LogRelevant);
+
+            return retVal;
+        }
     }
 
     public class MultiMeterBoard : MultiMeter

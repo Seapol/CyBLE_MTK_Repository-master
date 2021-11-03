@@ -245,6 +245,7 @@ namespace CyBLE_MTK_Application
                             CurrentMTKTestType = MTKTestType.MTKTestCUSReadOpenGPIO;
                             break;
                         case CUSTOM_CMD_READ_UNIQUE_ID:
+                            CurrentMTKTestType = MTKTestType.MTKTestCUS;
                             break;
                         case CUSTOM_CMD_READ_FW_VERSION:
                             CurrentMTKTestType = MTKTestType.MTKTestCUSReadFWVersion;
@@ -688,7 +689,7 @@ namespace CyBLE_MTK_Application
 
 
             //if (TestResult.Result != "PASS" && TmplSFCSErrCode == 0)
-            if (TestResult.Result != "PASS")
+            if (TestResult.Result.ToUpper() != "PASS")
             {
                 switch (CustomCommand)
                 {
@@ -732,6 +733,7 @@ namespace CyBLE_MTK_Application
                         CurrentMTKTestType = MTKTestType.MTKTestCUSReadOpenGPIO;
                         break;
                     case CUSTOM_CMD_READ_UNIQUE_ID:
+                        CurrentMTKTestType = MTKTestType.MTKTestCUS;
                         break;
                     case CUSTOM_CMD_READ_FW_VERSION:
                         CurrentMTKTestType = MTKTestType.MTKTestCUSReadFWVersion;
@@ -751,7 +753,7 @@ namespace CyBLE_MTK_Application
             TestResult.PassCriterion = "N/A";
             TestResult.Measured = "N/A";
 
-            MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_CUS_TEST_FAILURE_BUT_UNKNOWN;
+            MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_ALL_PASS;
 
             CurrentMTKTestType = MTKTestType.MTKTestCUS;
 
@@ -764,6 +766,7 @@ namespace CyBLE_MTK_Application
                     CurrentMTKTestType = MTKTestType.MTKTestCUSReadOpenGPIO;
                     break;
                 case CUSTOM_CMD_READ_UNIQUE_ID:
+                    CurrentMTKTestType = MTKTestType.MTKTestCUS;
                     break;
                 case CUSTOM_CMD_READ_FW_VERSION:
                     CurrentMTKTestType = MTKTestType.MTKTestCUSReadFWVersion;

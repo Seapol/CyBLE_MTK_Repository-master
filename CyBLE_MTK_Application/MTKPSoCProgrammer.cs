@@ -366,7 +366,7 @@ namespace CyBLE_MTK_Application
             if (portArray.Count() > 0)
             {
                 Log.PrintLog(this, "Discovered " + portArray.Count().ToString() +
-                    " programmers.", LogDetailLevel.LogRelevant);
+                    " programmers.", LogDetailLevel.LogEverything);
             }
 
             return portArray;

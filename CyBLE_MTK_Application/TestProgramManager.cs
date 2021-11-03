@@ -117,6 +117,7 @@ namespace CyBLE_MTK_Application
         public event TestProgramPausedEventHandler OnTestPaused;
         public event TestProgramStoppedEventHandler OnTestStopped;
         public event SerialPortEventHandler OnMTKPortOpen;
+        public event SerialPortEventHandler OnCrtBrdPortOpen;
         public event SerialPortEventHandler OnDUTPortOpen;
         public event SerialPortEventHandler OnAnritsuPortOpen;
         public event TestCompleteEventHandler OnTestComplete;
@@ -878,6 +879,14 @@ namespace CyBLE_MTK_Application
 
             DUTTmplSFCSErrCode = new UInt16[NumberOfDUTs, TestProgram.Count];
 
+
+            MTKTestDUTCurrentMeasure.PerformALLCH_CurrentTest();
+
+            if (!CheckDUTsPwrONHealth())
+            {
+                return;
+            }
+
             if (CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun > 0)
             {
                 for (int i = 0; i < CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun; i++)
@@ -933,7 +942,9 @@ namespace CyBLE_MTK_Application
                 if (Connect2CurtBrd(CurtBrdSerialPort))
                 {
                     //Power Off all DUTs
-                    if (MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels())
+                    MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
+
+                    if (CheckDUTsPwrOFFHealth())
                     {
                         Log.PrintLog(this, string.Format("[SUCC]: SUCC to Power Off all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
 
@@ -946,6 +957,8 @@ namespace CyBLE_MTK_Application
 
                     ////Power Off all DUTs
                     //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
+                    
+
                 }
                 else
                 {
@@ -954,6 +967,66 @@ namespace CyBLE_MTK_Application
                 }
             }
 
+        }
+
+        private bool CheckDUTsPwrOFFHealth()
+        {
+            bool retVal = false;
+
+            double[] res_current = MTKTestDUTCurrentMeasure.PerformALLCH_CurrentTest();
+
+            string res = "";
+
+            foreach (var item in res_current)
+            {
+                res += string.Format("|{0} mA|", item.ToString("F02"));
+
+                if ((float)item > CyBLE_MTK_Application.Properties.Settings.Default.PowerOff_CurrentUSL_mA)
+                {
+                    MessageBox.Show(string.Format("警告！！！发现DUT 没有正确POWER OFF ({0} mA | USL: {1} mA)，请立即停止测试，进行处理。", item.ToString("F02"),
+                        CyBLE_MTK_Application.Properties.Settings.Default.PowerOff_CurrentUSL_mA.ToString("F02")
+                        ), "Power ON OverCurrent Warning");
+                }
+                else
+                {
+
+                    retVal = true;
+                }
+            }
+
+            Log.PrintLog(this, string.Format("All DUT Powered OFF Already. {0}", res), LogDetailLevel.LogRelevant);
+
+            return retVal;
+        }
+
+        private bool CheckDUTsPwrONHealth()
+        {
+            bool retVal = false;
+
+            double[] res_current = MTKTestDUTCurrentMeasure.PerformALLCH_CurrentTest();
+
+            string res = "";
+
+            foreach (var item in res_current)
+            {
+                res += string.Format("|{0} mA|", item.ToString("F02"));
+
+                if ((float)item > CyBLE_MTK_Application.Properties.Settings.Default.PowerOn_OverCurrentUSL_mA)
+                {
+                    MessageBox.Show(string.Format("警告！！！发现大电流DUT({0} mA | USL: {1} mA)，请立即停止测试，进行处理。", item.ToString("F02"),
+                        CyBLE_MTK_Application.Properties.Settings.Default.PowerOn_OverCurrentUSL_mA.ToString("F02")
+                        ), "Power ON OverCurrent Warning");
+                }
+                else
+                {
+                    
+                    retVal = true;
+                }
+            }
+
+            Log.PrintLog(this, string.Format("All DUT Power Current are health. {0}", res), LogDetailLevel.LogRelevant);
+
+            return retVal;
         }
 
         private bool Connect2CurtBrd(SerialPort SPort)
@@ -987,6 +1060,7 @@ namespace CyBLE_MTK_Application
                     {
                         MTKCurrentMeasureBoard.Board.Connect(SPort);
                         retVal = true;
+                        OnCrtBrdPortOpen();
                     }
                 }
                 else

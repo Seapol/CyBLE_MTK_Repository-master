@@ -12,7 +12,7 @@ namespace CyBLE_MTK_Application.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -841,7 +841,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
         public int CUSTestRRSRetryInTheBeginning {
             get {
                 return ((int)(this["CUSTestRRSRetryInTheBeginning"]));
@@ -1105,7 +1105,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-70")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-90")]
         public int CyBLE_RSSI_LowerLimitDBM {
             get {
                 return ((int)(this["CyBLE_RSSI_LowerLimitDBM"]));
@@ -1506,7 +1506,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("COM22")]
+        [global::System.Configuration.DefaultSettingValueAttribute("COM30")]
         public string CurtBrdSerialPort {
             get {
                 return ((string)(this["CurtBrdSerialPort"]));
@@ -1559,6 +1559,30 @@ namespace CyBLE_MTK_Application.Properties {
             }
             set {
                 this["boardV2_NSamples"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("40")]
+        public float PowerOn_OverCurrentUSL_mA {
+            get {
+                return ((float)(this["PowerOn_OverCurrentUSL_mA"]));
+            }
+            set {
+                this["PowerOn_OverCurrentUSL_mA"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public float PowerOff_CurrentUSL_mA {
+            get {
+                return ((float)(this["PowerOff_CurrentUSL_mA"]));
+            }
+            set {
+                this["PowerOff_CurrentUSL_mA"] = value;
             }
         }
     }
