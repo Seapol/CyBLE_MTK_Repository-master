@@ -74,6 +74,8 @@ namespace CyBLE_MTK_Application
 
         private string TesterID = System.Net.Dns.GetHostName();
 
+
+
         public static bool[] DUTsTestFlag = {true,true,true,true, true, true, true, true };
 
         public static bool[] DUTSerialPortsConfigured = { true, true, true, true, true, true, true, true };
@@ -171,6 +173,7 @@ namespace CyBLE_MTK_Application
             double[] yValues = { COUNT_PASS, COUNT_FAIL };
             string[] xValues = { "PASS", "FAIL" };
 
+            this.SWVerStatusLabel.Text += System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             shopfloor_permission = new bool[(int)(CyBLE_MTK_Application.Properties.Settings.Default.NumDUTs)];
 
@@ -445,7 +448,6 @@ namespace CyBLE_MTK_Application
             MTKTestProgram.DUTConnectionType = CyBLE_MTK_Application.Properties.Settings.Default.ConnectionType;
             MTKTestProgram.OnDUTPortOpen += new TestProgramManager.SerialPortEventHandler(MTKTestProgram_OnDUTPortOpen);
             MTKTestProgram.OnMTKPortOpen += new TestProgramManager.SerialPortEventHandler(MTKTestProgram_OnMTKPortOpen);
-            MTKTestProgram.OnCrtBrdPortOpen += new TestProgramManager.SerialPortEventHandler(MTKTestProgram_OnCrtBrdPortOpen);
             MTKTestProgram.OnAnritsuPortOpen += new TestProgramManager.SerialPortEventHandler(MTKTestProgram_OnAnritsuPortOpen);
             MTKTestProgram.OnIgnoreDUT += new TestProgramManager.IgnoreDUTEventHandler(MTKTestProgram_OnIgnoreDUT);
             
@@ -554,16 +556,6 @@ namespace CyBLE_MTK_Application
 
             //
             //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
-        }
-
-        private void MTKTestProgram_OnCrtBrdPortOpen()
-        {
-            this.Invoke(new MethodInvoker(() => OnCrtBrdPortOpen()));
-        }
-
-        private void OnCrtBrdPortOpen()
-        {
-            this.Invoke(new MethodInvoker(() => CurtBrdStatus.BackColor = Color.Green));
         }
 
         /// <summary>
@@ -2585,31 +2577,22 @@ namespace CyBLE_MTK_Application
         /// </summary>
         private void MTKTestProgram_OnShopfloorPermissionCheckFail(int CurrentDUT)
         {
-            
-
             if (DUTInfoDataGridView.Rows[CurrentDUT].Cells["Serial Port"].Value != "Configure...")
             {
-
-                if (CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun > 1)
+                ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
+                if (CyBLE_MTK_Application.Properties.Settings.Default.SFCSInterface.ToLower().Contains("local"))
                 {
-                    ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
                     this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.Red, BackColor = Color.Pink }));
                     this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "FAIL"));
-
-                    this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
-                    this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
                 }
                 else
                 {
-                    ProgramStatus[MTKTestProgram.CurrentDUT] = MTKTestError.TestFailed;
                     this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Style = new DataGridViewCellStyle { ForeColor = Color.DarkRed, BackColor = Color.Pink }));
                     this.Invoke(new MethodInvoker(() => DUTInfoDataGridView.Rows[CurrentDUT].Cells["Status"].Value = "PROCESS FAIL"));
-
-                    this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
-                    this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
                 }
 
-                
+                this.Invoke(new MethodInvoker(() => TestStatusLabel.ForeColor = Color.Red));
+                this.Invoke(new MethodInvoker(() => TestStatusLabel.Text = "FAIL"));
             }
             else
             {
@@ -3068,33 +3051,33 @@ namespace CyBLE_MTK_Application
 
             //SetRowCntOfDUTDatainfoGridViewByDUTTestFlags(DUTsTestFlag);
 
-            if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
-            {
-                MTKTestProgram.CurtBrdSerialPort = CurtBrdSerialPortDialog.DeviceSerialPort;
+            //if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
+            //{
+            //    MTKTestProgram.CurtBrdSerialPort = CurtBrdSerialPortDialog.DeviceSerialPort;
 
-                if (Connect2CurtBrd(CurtBrdSerialPortDialog.DeviceSerialPort))
-                {
-                    //Power On all DUTs
-                    if (MTKCurrentMeasureBoard.Board.SW.CloseAllSWChannels())
-                    {
-                        Logger.PrintLog(this, string.Format("[SUCC]: SUCC to Power On all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+            //    if (Connect2CurtBrd(CurtBrdSerialPortDialog.DeviceSerialPort))
+            //    {
+            //        //Power On all DUTs
+            //        if (MTKCurrentMeasureBoard.Board.SW.CloseAllSWChannels())
+            //        {
+            //            Logger.PrintLog(this, string.Format("[SUCC]: SUCC to Power On all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
                         
-                    }
-                    else
-                    {
-                        Logger.PrintLog(this, string.Format("[ERROR]: Fail to Power On all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
-                        return;
-                    }
+            //        }
+            //        else
+            //        {
+            //            Logger.PrintLog(this, string.Format("[ERROR]: Fail to Power On all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+            //            return;
+            //        }
                     
-                    ////Power Off all DUTs
-                    //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
-                }
-                else
-                {
-                    Logger.PrintLog(this, string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
-                    return;
-                }
-            }
+            //        ////Power Off all DUTs
+            //        //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
+            //    }
+            //    else
+            //    {
+            //        Logger.PrintLog(this, string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+            //        return;
+            //    }
+            //}
 
             
 

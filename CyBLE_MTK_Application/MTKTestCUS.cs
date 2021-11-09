@@ -245,7 +245,6 @@ namespace CyBLE_MTK_Application
                             CurrentMTKTestType = MTKTestType.MTKTestCUSReadOpenGPIO;
                             break;
                         case CUSTOM_CMD_READ_UNIQUE_ID:
-                            CurrentMTKTestType = MTKTestType.MTKTestCUS;
                             break;
                         case CUSTOM_CMD_READ_FW_VERSION:
                             CurrentMTKTestType = MTKTestType.MTKTestCUSReadFWVersion;
@@ -689,7 +688,7 @@ namespace CyBLE_MTK_Application
 
 
             //if (TestResult.Result != "PASS" && TmplSFCSErrCode == 0)
-            if (TestResult.Result.ToUpper() != "PASS")
+            if (TestResult.Result != "PASS")
             {
                 switch (CustomCommand)
                 {
@@ -704,6 +703,7 @@ namespace CyBLE_MTK_Application
                         MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_GPIO_OPENSHORTS_TEST_FAIL;
                         break;
                     case CUSTOM_CMD_READ_UNIQUE_ID:
+                        CurrentMTKTestType = MTKTestType.MTKTestCUS;
                         TmplSFCSErrCode = (ECCS.ERRORCODE_SILICON_UNIQUENUMBER_TEST_FAIL);
                         MTKTestTmplSFCSErrCode = ECCS.ERRORCODE_SILICON_UNIQUENUMBER_TEST_FAIL;
                         break;

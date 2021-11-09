@@ -5,7 +5,6 @@ using System.Text;
 using System.IO;
 using System.IO.Ports;
 using System.Threading;
-using System.Diagnostics;
 using System.Windows.Forms;
 using CypressSemiconductor.ChinaManufacturingTest;
 
@@ -22,7 +21,6 @@ namespace CyBLE_MTK_Application
 
         EnumPassConOverall conOverall;
 
-        Stopwatch stopwatch = new Stopwatch();
 
         public struct Current
         {
@@ -236,8 +234,6 @@ namespace CyBLE_MTK_Application
             //TO DO something...
             MTKTestError RetVal = MTKTestError.Pending;
 
-            
-
             try
             {
                 int CH = (CurrentDUT - 1);
@@ -274,7 +270,7 @@ namespace CyBLE_MTK_Application
                         case EnumPassConOverall.ONE_SAMPLE:
                             for (int i = 0; i < SamplesCount; i++)
                             {
-                                current_meas = PerformCH_CurrentTest(CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[CurrentDUT]);
+                                current_meas = PerformCH_CurrentTest(CurrentDUT);
                                 if (current_meas >= DUTCurrentLowerLimitMilliAmp && current_meas <= DUTCurrentUpperLimitMilliAmp)
                                 {
                                     //Pass
@@ -286,7 +282,7 @@ namespace CyBLE_MTK_Application
                         case EnumPassConOverall.ALL_SAMPLES:
                             for (int i = 0; i < SamplesCount; i++)
                             {
-                                current_meas = PerformCH_CurrentTest(CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[CurrentDUT]);
+                                current_meas = PerformCH_CurrentTest(CurrentDUT);
                                 if (current_meas <= DUTCurrentLowerLimitMilliAmp && current_meas >= DUTCurrentUpperLimitMilliAmp)
                                 {
                                     //Fail
@@ -318,9 +314,9 @@ namespace CyBLE_MTK_Application
                     TestResultUpdate(TestResult);
                     TestStatusUpdate(MTKTestMessageType.Failure, "Fail");
                 }
-
-
                 
+
+
 
                 return RetVal;
 
@@ -332,24 +328,39 @@ namespace CyBLE_MTK_Application
                 TestResultUpdate(TestResult);
                 return RetVal;
             }
-            
+            finally
+            {
+                //Recover all duts' power on after testing.
+                if (!MTKInstruments.SwitchAllDutOn())
+                {
+                    this.Log.PrintLog(this, "Fail to recover power after current test.", LogDetailLevel.LogEverything);
+                }
+
+            }
 
 
 
 
         }
 
-        private double PerformCH_CurrentTest(bool CHstatus)
+        private double PerformCH_CurrentTest(int CH)
         {
             byte chmask = 0;
             double current = 0;
 
             for (int i = 0; i < CyBLE_Current_Test_OnCurBrd.SW_CH_Closed.Length; i++)
             {
-                if (CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[i] == true)
+                if (CH == (i+1))
                 {
+                    CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[i] = true;
                     chmask |= (byte)(1 << i);
                 }
+                else
+                {
+                    CyBLE_Current_Test_OnCurBrd.SW_CH_Closed[i] = false;
+                }
+
+                
             }
 
 
@@ -368,48 +379,6 @@ namespace CyBLE_MTK_Application
             }
 
             return current;
-        }
-
-        public static double[] PerformALLCH_CurrentTest()
-        {
-            byte chmask = 0;
-            List<double> Current = new List<double>();
-
-            Current.Clear();
-
-            for (int i = 0; i < CyBLE_Current_Test_OnCurBrd.SW_CH_Closed.Length; i++)
-            {
-                
-
-                chmask |= (byte)(1 << i);
-            }
-
-
-
-            if (MTKCurrentMeasureBoard.Board.SW.SetRelayWellA((byte)(chmask & 0xf), (byte)((chmask & 0xF0) >> 4)))
-            {
-                //for (int i = 0; i < 8; i++)
-                //{
-                //    int CH = i;
-                //    current = MTKCurrentMeasureBoard.Board.DMM.MeasureCurrentAVG(CH);
-                //    Log.PrintLog(this, string.Format("[CH {0}] {1} mA", CH, current.ToString("F02")), LogDetailLevel.LogEverything);
-                //}
-
-                for (int i = 0; i < CyBLE_Current_Test_OnCurBrd.SW_CH_Closed.Length; i++)
-                {
-                    Current.Add(MTKCurrentMeasureBoard.Board.DMM.MeasureCurrentAVG(i));
-                }
-
-                
-
-                //Log.PrintLog(this, string.Format("[CH {0}] {1} mA", CurrentDUT - 1, current.ToString("F02")), LogDetailLevel.LogRelevant);
-            }
-
-            
-
-            
-
-            return Current.ToArray();
         }
 
         private bool Connect2CurtBrd(SerialPort SPort)
@@ -511,39 +480,7 @@ namespace CyBLE_MTK_Application
 
             this.InitializeTestResult();
 
-            stopwatch.Restart();
-
             TestResult.Measured = " Result: ";
-
-            //Recover all duts' power on after testing.
-            if (!MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels())
-            {
-                this.Log.PrintLog(this, "Fail to open all SW channels before current test.", LogDetailLevel.LogRelevant);
-
-                RetVal = MTKTestError.TestFailed;
-                TestResult.Result = "FAIL";
-                TestResultUpdate(TestResult);
-                TestStatusUpdate(MTKTestMessageType.Failure, "Fail");
-
-                return RetVal;
-            }
-            else
-            {
-                this.Log.PrintLog(this, "Succ to open all SW channels before current test.", LogDetailLevel.LogRelevant);
-
-                if (MTKCurrentMeasureBoard.Board.SW.CloseSWChannel(CurrentDUT))
-                {
-                    Log.PrintLog(this, string.Format("Succ to close DUT#{0} channel before current test.", CurrentDUT), LogDetailLevel.LogRelevant);
-                }
-                else
-                {
-                    Log.PrintLog(this, string.Format("Fail to close DUT#{0} channel before current test.", CurrentDUT), LogDetailLevel.LogRelevant);
-
-                }
-
-                //Thread.Sleep(200);
-            }
-
 
             if (this.DUTConnectionMode == DUTConnMode.BLE)
             {
@@ -610,61 +547,21 @@ namespace CyBLE_MTK_Application
                 }
                 else
                 {
-                    ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERROR_CODE_PWR_CURR_TEST_FAIL;
                     TestStatusUpdate(MTKTestMessageType.Failure, "Fail");
                     TestResult.Result = "FAIL";                   
                 }
 
-
-                Log.PrintLog(this, string.Format("[DUT#{0}: {1}|{2}] {3}"
-                    , CurrentDUT,TestResult.Result.ToUpper(), ERRORCODE_DUTCurrentMeasureFailure,
-                    TestResult.Measured), LogDetailLevel.LogRelevant);
+                Log.PrintLog(this, TestResult.Result + " : " + TestResult.Measured, LogDetailLevel.LogRelevant);
                 MTKTestTmplSFCSErrCode = ERRORCODE_DUTCurrentMeasureFailure;
             }
             else
             {
-                ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERRORCODE_OTHERS_UNDEFINED_ERROR;
                 TestStatusUpdate(MTKTestMessageType.Failure, "NoConnectionModeSet");
-                TestResult.Result = "FAIL";
                 return MTKTestError.NoConnectionModeSet;
             }
 
             TestResultUpdate(TestResult);
 
-            stopwatch.Stop();
-
-            Log.PrintLog(this, string.Format("Test time elapsed： {0} secs", (((float)stopwatch.ElapsedMilliseconds)/1000).ToString("F02")), LogDetailLevel.LogRelevant);
-
-
-            //Recover all duts' power on after testing.
-            if (!MTKCurrentMeasureBoard.Board.SW.CloseAllSWChannels())
-            {
-                this.Log.PrintLog(this, "Fail to recover power after current test.", LogDetailLevel.LogRelevant);
-            }
-            else
-            {
-                double[] res_current = PerformALLCH_CurrentTest();
-
-                string res = "";
-
-                foreach (var item in res_current)
-                {
-                    res += string.Format("|{0} mA|", item.ToString("F02"));
-
-                    if ((float)item > CyBLE_MTK_Application.Properties.Settings.Default.PowerOn_OverCurrentUSL_mA)
-                    {
-                        MessageBox.Show(string.Format("警告！！！发现大电流DUT({0} mA | USL: {1} mA)，请立即停止测试，进行处理。", item.ToString("F02"),
-                            CyBLE_MTK_Application.Properties.Settings.Default.PowerOn_OverCurrentUSL_mA.ToString("F02")
-                            ),"Power ON OverCurrent Warning");
-                    }
-                }
-
-                this.Log.PrintLog(this, string.Format("Succ to recover power after current test. {0}", res), LogDetailLevel.LogRelevant);
-                
-                Thread.Sleep(200);
-            }
-
-            
             return RetVal;
         }
 
@@ -673,7 +570,7 @@ namespace CyBLE_MTK_Application
             base.InitializeTestResult();
             TestResult.PassCriterion = "Limit: " +  + Math.Round(DUTCurrentLowerLimitMilliAmp,3) + "~" + Math.Round(DUTCurrentUpperLimitMilliAmp, 3) + " mA" +"||" + criterion_per_sample +"||"+ overallpass_condition;
             TestResult.Measured = "N/A";
-            ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERROR_CODE_PWR_CURR_TEST_FAIL;
+            ERRORCODE_DUTCurrentMeasureFailure = ECCS.ERRORCODE_ALL_PASS;
             sample_failure_result_message = "";
 
             CurrentMTKTestType = MTKTestType.MTKTestDUTCurrentMeasure;

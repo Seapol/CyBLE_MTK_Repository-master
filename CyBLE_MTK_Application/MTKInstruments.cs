@@ -1,7 +1,7 @@
 ﻿using CypressSemiconductor.ChinaManufacturingTest;
 using System;
-using System.Runtime.CompilerServices;
-using System.Windows;
+
+
 
 namespace CyBLE_MTK_Application
 {
@@ -287,9 +287,9 @@ namespace CyBLE_MTK_Application
                 return true;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show(ex.Message);
+
                 return false;
             }
 

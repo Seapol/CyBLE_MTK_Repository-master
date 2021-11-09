@@ -12,7 +12,7 @@ namespace CyBLE_MTK_Application.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.5.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -793,7 +793,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ALL_SAMPLES")]
+        [global::System.Configuration.DefaultSettingValueAttribute("ONE_SAMPLE")]
         public string DUTCurrentMeasureOverallPassCondition {
             get {
                 return ((string)(this["DUTCurrentMeasureOverallPassCondition"]));
@@ -841,7 +841,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int CUSTestRRSRetryInTheBeginning {
             get {
                 return ((int)(this["CUSTestRRSRetryInTheBeginning"]));
@@ -1045,7 +1045,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
         public int TestModeLongRun {
             get {
                 return ((int)(this["TestModeLongRun"]));
@@ -1552,7 +1552,7 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int boardV2_NSamples {
             get {
                 return ((int)(this["boardV2_NSamples"]));
@@ -1564,25 +1564,13 @@ namespace CyBLE_MTK_Application.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("40")]
-        public float PowerOn_OverCurrentUSL_mA {
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        public int TestModeLongRunBetweenDelayMS {
             get {
-                return ((float)(this["PowerOn_OverCurrentUSL_mA"]));
+                return ((int)(this["TestModeLongRunBetweenDelayMS"]));
             }
             set {
-                this["PowerOn_OverCurrentUSL_mA"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public float PowerOff_CurrentUSL_mA {
-            get {
-                return ((float)(this["PowerOff_CurrentUSL_mA"]));
-            }
-            set {
-                this["PowerOff_CurrentUSL_mA"] = value;
+                this["TestModeLongRunBetweenDelayMS"] = value;
             }
         }
     }

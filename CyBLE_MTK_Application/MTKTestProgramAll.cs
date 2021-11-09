@@ -5,7 +5,6 @@ using System.Text;
 using System.IO;
 using System.IO.Ports;
 using System.Threading;
-using System.Windows;
 
 namespace CyBLE_MTK_Application
 {
@@ -95,7 +94,7 @@ namespace CyBLE_MTK_Application
 
         public override string GetDisplayText()
         {
-            string temp = (ProgramAllAtEnd)?"at the end.":"at the begining.";
+            string temp = (ProgramAllAtEnd)?"at the end.":"at the begning.";
             return "Program all devices " + temp;
         }
 
@@ -367,13 +366,6 @@ namespace CyBLE_MTK_Application
                 }
                 else
                 {
-                    //string Msg = "";
-                    //foreach (var item in RxEventSplit)
-                    //{
-                    //    Msg = item.ToString();
-                    //}
-
-                    //MessageBox.Show(Msg);
                     Log.PrintLog(this, "Cannot perform module checks, 'Event Parameter Length' mismatch.", LogDetailLevel.LogRelevant);
                 }
 

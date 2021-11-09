@@ -195,7 +195,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="DUTCurrentMeasureOverallPassCondition" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ALL_SAMPLES</Value>
+      <Value Profile="(Default)">ONE_SAMPLE</Value>
     </Setting>
     <Setting Name="IntervalBetweenDUTCurrentMeasure" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
@@ -207,7 +207,7 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="CUSTestRRSRetryInTheBeginning" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">5</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="DelayPerCommandSTC_Additional" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
@@ -258,7 +258,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="TestModeLongRun" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">6</Value>
     </Setting>
     <Setting Name="DUTTestInfoRemarks" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -583,13 +583,10 @@
       <Value Profile="(Default)">50</Value>
     </Setting>
     <Setting Name="boardV2_NSamples" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">8</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="PowerOn_OverCurrentUSL_mA" Type="System.Single" Scope="User">
-      <Value Profile="(Default)">40</Value>
-    </Setting>
-    <Setting Name="PowerOff_CurrentUSL_mA" Type="System.Single" Scope="User">
-      <Value Profile="(Default)">10</Value>
+    <Setting Name="TestModeLongRunBetweenDelayMS" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

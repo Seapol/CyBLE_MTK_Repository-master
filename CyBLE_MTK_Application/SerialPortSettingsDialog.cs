@@ -217,6 +217,17 @@ namespace CyBLE_MTK_Application
             base.OnClosing(e);
         }
 
+        private void SerialPortCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+            
+        }
+
+        private void SerialPortCombo_MouseClick(object sender, MouseEventArgs e)
+        {
+            RefreshPortList();
+        }
+
         protected override void OnLoad(EventArgs e)
         {
             AddPorts();

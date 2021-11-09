@@ -199,7 +199,7 @@ namespace CyBLE_MTK_Application
 
         void Event_UpdateChipName(string family, string device)
         {
-            Log.PrintLog(this, "Automatically Detected Device Family: " + family, LogDetailLevel.LogRelevant);
+            Log.PrintLog(this, "Automatically Detected Device Family: " + family, LogDetailLevel.LogEverything);
         }
 
         protected virtual void NumTestStatusUpdate(string Message)
@@ -435,7 +435,7 @@ namespace CyBLE_MTK_Application
             int hr = Programmer.OpenPort(SelectedProgrammer, out LastError);
             if (IsSuccess(hr))
             {
-                Log.PrintLog(this, "Programmer port successfully opened." + LastError, LogDetailLevel.LogRelevant);
+                Log.PrintLog(this, "Programmer port successfully opened." + LastError, LogDetailLevel.LogEverything);
                 return true;
             }
             Log.PrintLog(this, LastError, LogDetailLevel.LogRelevant);
@@ -456,7 +456,7 @@ namespace CyBLE_MTK_Application
             int hr = Programmer.ClosePort(out LastError);
             if (IsSuccess(hr))
             {
-                Log.PrintLog(this, "Programmer port successfully closed." + LastError, LogDetailLevel.LogRelevant);
+                Log.PrintLog(this, "Programmer port successfully closed." + LastError, LogDetailLevel.LogEverything);
                 return true;
             }
             Log.PrintLog(this, LastError, LogDetailLevel.LogRelevant);
@@ -526,7 +526,7 @@ namespace CyBLE_MTK_Application
             int hr;
 
             //-1-. Initialize programmer
-            Log.PrintLog(this, "Initializing programmer.", LogDetailLevel.LogRelevant);
+            Log.PrintLog(this, "Initializing programmer.", LogDetailLevel.LogEverything);
             try
             {
                 if (!InitializeProgrammer())
@@ -580,7 +580,7 @@ namespace CyBLE_MTK_Application
         {
             int hr;
 
-            Log.PrintLog(this, "Initializing programmer.", LogDetailLevel.LogRelevant);
+            Log.PrintLog(this, "Initializing programmer.", LogDetailLevel.LogEverything);
             if (!InitializeProgrammer())
             {
                 return false;

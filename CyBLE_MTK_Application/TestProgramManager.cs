@@ -117,7 +117,6 @@ namespace CyBLE_MTK_Application
         public event TestProgramPausedEventHandler OnTestPaused;
         public event TestProgramStoppedEventHandler OnTestStopped;
         public event SerialPortEventHandler OnMTKPortOpen;
-        public event SerialPortEventHandler OnCrtBrdPortOpen;
         public event SerialPortEventHandler OnDUTPortOpen;
         public event SerialPortEventHandler OnAnritsuPortOpen;
         public event TestCompleteEventHandler OnTestComplete;
@@ -879,14 +878,6 @@ namespace CyBLE_MTK_Application
 
             DUTTmplSFCSErrCode = new UInt16[NumberOfDUTs, TestProgram.Count];
 
-
-            MTKTestDUTCurrentMeasure.PerformALLCH_CurrentTest();
-
-            if (!CheckDUTsPwrONHealth())
-            {
-                return;
-            }
-
             if (CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun > 0)
             {
                 for (int i = 0; i < CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRun; i++)
@@ -920,6 +911,8 @@ namespace CyBLE_MTK_Application
                     }
 
 
+                    Thread.Sleep(CyBLE_MTK_Application.Properties.Settings.Default.TestModeLongRunBetweenDelayMS);
+
                 }
             }
             else
@@ -934,99 +927,10 @@ namespace CyBLE_MTK_Application
 
             }
 
-            if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
-            {
+            
 
-                
 
-                if (Connect2CurtBrd(CurtBrdSerialPort))
-                {
-                    //Power Off all DUTs
-                    MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
 
-                    if (CheckDUTsPwrOFFHealth())
-                    {
-                        Log.PrintLog(this, string.Format("[SUCC]: SUCC to Power Off all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
-
-                    }
-                    else
-                    {
-                        Log.PrintLog(this, string.Format("[ERROR]: Fail to Power Off all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
-                        MessageBox.Show(string.Format("[ERROR]: Fail to Power Off all DUTs via MTKCurrentBoard!!!"));
-                    }
-
-                    ////Power Off all DUTs
-                    //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
-                    
-
-                }
-                else
-                {
-                    Log.PrintLog(this, string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
-                    MessageBox.Show(string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"));
-                }
-            }
-
-        }
-
-        private bool CheckDUTsPwrOFFHealth()
-        {
-            bool retVal = false;
-
-            double[] res_current = MTKTestDUTCurrentMeasure.PerformALLCH_CurrentTest();
-
-            string res = "";
-
-            foreach (var item in res_current)
-            {
-                res += string.Format("|{0} mA|", item.ToString("F02"));
-
-                if ((float)item > CyBLE_MTK_Application.Properties.Settings.Default.PowerOff_CurrentUSL_mA)
-                {
-                    MessageBox.Show(string.Format("警告！！！发现DUT 没有正确POWER OFF ({0} mA | USL: {1} mA)，请立即停止测试，进行处理。", item.ToString("F02"),
-                        CyBLE_MTK_Application.Properties.Settings.Default.PowerOff_CurrentUSL_mA.ToString("F02")
-                        ), "Power ON OverCurrent Warning");
-                }
-                else
-                {
-
-                    retVal = true;
-                }
-            }
-
-            Log.PrintLog(this, string.Format("All DUT Powered OFF Already. {0}", res), LogDetailLevel.LogRelevant);
-
-            return retVal;
-        }
-
-        private bool CheckDUTsPwrONHealth()
-        {
-            bool retVal = false;
-
-            double[] res_current = MTKTestDUTCurrentMeasure.PerformALLCH_CurrentTest();
-
-            string res = "";
-
-            foreach (var item in res_current)
-            {
-                res += string.Format("|{0} mA|", item.ToString("F02"));
-
-                if ((float)item > CyBLE_MTK_Application.Properties.Settings.Default.PowerOn_OverCurrentUSL_mA)
-                {
-                    MessageBox.Show(string.Format("警告！！！发现大电流DUT({0} mA | USL: {1} mA)，请立即停止测试，进行处理。", item.ToString("F02"),
-                        CyBLE_MTK_Application.Properties.Settings.Default.PowerOn_OverCurrentUSL_mA.ToString("F02")
-                        ), "Power ON OverCurrent Warning");
-                }
-                else
-                {
-                    
-                    retVal = true;
-                }
-            }
-
-            Log.PrintLog(this, string.Format("All DUT Power Current are health. {0}", res), LogDetailLevel.LogRelevant);
-
-            return retVal;
         }
 
         private bool Connect2CurtBrd(SerialPort SPort)
@@ -1060,7 +964,6 @@ namespace CyBLE_MTK_Application
                     {
                         MTKCurrentMeasureBoard.Board.Connect(SPort);
                         retVal = true;
-                        OnCrtBrdPortOpen();
                     }
                 }
                 else
@@ -1101,6 +1004,9 @@ namespace CyBLE_MTK_Application
                 MessageBox.Show(ex.ToString(), "StopWatch of TestProgramManager");
             }
 
+            
+
+
             if (CheckAllDutsPermissionFailure())
             {
                 for (int i = 0; i < NumIteration; i++)
@@ -1112,6 +1018,50 @@ namespace CyBLE_MTK_Application
             }
             else
             {
+                #region PowerOn DUTs via MTKCurrentBoard
+                if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
+                {
+
+
+
+                    if (Connect2CurtBrd(CurtBrdSerialPort))
+                    {
+                        //Power On all DUTs
+                        if (MTKCurrentMeasureBoard.Board.SW.CloseAllSWChannels())
+                        {
+                            Log.PrintLog(this, string.Format("[SUCC]: SUCC to Power On all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                            Thread.Sleep(500);
+
+                            double curr_val = 0.0;
+                            string msg = "";
+
+                            for (int i = 0; i < NumberOfDUTs; i++)
+                            {
+                                curr_val = MTKCurrentMeasureBoard.Board.DMM.MeasureCurrentAVG(i);
+                                msg += string.Format("[#{0}]: {1} mA ", i+1, curr_val.ToString("f02"));
+                            }
+
+                            Log.PrintLog(this, msg, LogDetailLevel.LogRelevant);
+                        }
+                        else
+                        {
+                            Log.PrintLog(this, string.Format("[ERROR]: Fail to Power On all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                            MessageBox.Show(string.Format("[ERROR]: Fail to Power On all DUTs via MTKCurrentBoard!!!"));
+                            return;
+                        }
+
+                        ////Power Off all DUTs
+                        //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
+                    }
+                    else
+                    {
+                        Log.PrintLog(this, string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                        MessageBox.Show(string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"));
+                        return;
+                    }
+                }
+                #endregion
+
                 for (int j = 0; j < NumIteration; j++)
                 {
                     devTestComplete = false;
@@ -1210,7 +1160,47 @@ namespace CyBLE_MTK_Application
             _CurrentTestIndex = 0;
             CurrentTestStatus = TestProgramState.Stopped;
 
+            #region PowerOff DUTs via MTKCurrentBoard
+            if (CyBLE_MTK_Application.Properties.Settings.Default.CurrentTestMethod.Contains("MTKCurrentBoard"))
+            {
 
+
+
+                if (Connect2CurtBrd(CurtBrdSerialPort))
+                {
+                    //Power Off all DUTs
+                    if (MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels())
+                    {
+                        Log.PrintLog(this, string.Format("[SUCC]: SUCC to Power Off all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+
+                        double curr_val = 0.0;
+                        string msg = "";
+
+                        for (int i = 0; i < NumberOfDUTs; i++)
+                        {
+                            curr_val = MTKCurrentMeasureBoard.Board.DMM.MeasureCurrentAVG(i);
+                            msg += string.Format("[#{0}]: {1} mA ", i + 1, curr_val.ToString("f02"));
+                        }
+
+                        Log.PrintLog(this, msg, LogDetailLevel.LogRelevant);
+
+                    }
+                    else
+                    {
+                        Log.PrintLog(this, string.Format("[ERROR]: Fail to Power Off all DUTs via MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                        MessageBox.Show(string.Format("[ERROR]: Fail to Power Off all DUTs via MTKCurrentBoard!!!"));
+                    }
+
+                    ////Power Off all DUTs
+                    //MTKCurrentMeasureBoard.Board.SW.OpenAllSWChannels();
+                }
+                else
+                {
+                    Log.PrintLog(this, string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"), LogDetailLevel.LogRelevant);
+                    MessageBox.Show(string.Format("[ERROR]: Fail to connect MTKCurrentBoard!!!"));
+                }
+            }
+            #endregion
 
 
         }

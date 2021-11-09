@@ -64,7 +64,6 @@ namespace CyBLE_MTK_Application
         public const UInt16 ERROR_CODE_DMM = 0x0A00;
         public const UInt16 ERROR_CODE_DMM_LOW = 0x0A01;
         public const UInt16 ERROR_CODE_DMM_HIGH = 0x0A02;
-        public const UInt16 ERROR_CODE_PWR_CURR_TEST_FAIL = 0x0A0A;
         public const UInt16 ERROR_CODE_CHECK_SN = 0x0B00;
 
         public static UInt16 TMPL_ERROR_CODE = 0xFFFF;
