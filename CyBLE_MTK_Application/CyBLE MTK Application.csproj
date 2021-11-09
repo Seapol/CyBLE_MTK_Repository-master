@@ -164,9 +164,8 @@
     <Reference Include="GeneralLinkSqlLocal">
       <HintPath>.\GeneralLinkSqlLocal.dll</HintPath>
     </Reference>
-    <Reference Include="HexadecimalTextBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\HexadecimalTextBox\bin\x86\Release\HexadecimalTextBox.dll</HintPath>
+    <Reference Include="HexadecimalTextBox">
+      <HintPath>..\HexadecimalTextBox\bin\Debug\HexadecimalTextBox.dll</HintPath>
     </Reference>
     <Reference Include="Ivi.Visa.Interop">
       <HintPath>.\Ivi.Visa.Interop.dll</HintPath>
